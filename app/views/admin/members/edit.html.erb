@@ -1,0 +1,9 @@
+<h1>Edit member</h1>
+
+<%= error_messages_for :member %>
+<% form_for :member, :url => member_path, :html => { :method => :put }  do |f| -%>
+<table class="form">
+  <%= render :partial => "form", :locals => {:f => f} %>
+  <tr><th>&nbsp;</th><td><%= submit_tag 'Edit' %></td></tr>
+</table>
+<% end -%>

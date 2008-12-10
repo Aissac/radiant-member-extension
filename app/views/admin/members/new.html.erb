@@ -1,0 +1,9 @@
+<h1>Add  a new user</h1>
+
+<%= error_messages_for :member %>
+<% form_for :member, :url => members_path do |f| -%>
+<table class="form">
+  <%= render :partial => "form", :locals => {:f => f} %>
+  <tr><th>&nbsp;</th><td><%= submit_tag 'Sign up' %></td></tr>
+</table>
+<% end -%>
