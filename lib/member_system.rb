@@ -1,7 +1,7 @@
 module MemberSystem
   
   def self.allow_url?(member, url)
-    if url =~ /articles/
+    if url =~ Regexp.new(MEMBERS_ROOT)
       !member.nil?
     else
       true

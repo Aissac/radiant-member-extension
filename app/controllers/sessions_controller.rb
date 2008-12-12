@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   include AuthenticatedMembersSystem
   
   no_login_required
-  # skip_before_filter :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token
   
   def new
   end
@@ -15,10 +15,8 @@ class SessionsController < ApplicationController
       self.current_member = member
       new_cookie_flag = (params[:remember_me] == "1")
       handle_remember_member_cookie! new_cookie_flag
-      redirect_back_or_default('/')
+      redirect_back_or_default(MEMBER_HOME_PATH)
       flash[:notice] = "Logged in successfully"
-      logger.debug(">>>>>>>>>>>>>> session_controller Member ID #{member.id} si CurrentMember ID #{current_member.id}")
-      logger.debug(">>>>>>>>>>>>>>>session_controller session_member_id #{session[:member_id]}")
     else
       note_failed_signin
       @email       = params[:email]
@@ -28,9 +26,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    logout_killing_member_session!
+    logout_keeping_member_session!
     flash[:notice] = "You have been logged out."
-    redirect_back_or_default('/')
+    redirect_back_or_default(MEMBER_LOGIN_PATH)
   end
 
   protected

@@ -46,7 +46,6 @@ class Admin::MembersController < ApplicationController
   
   def reset_password
     @member = Member.find(params[:id])
-    logger.debug(">>>>>>>>>>>>>>>session_controller session_member #{session[:member_id]}")
   end
   
   def send_email

@@ -15,14 +15,11 @@ module SiteControllerExtensions
       else
         url = url.to_s
       end
-      logger.debug(">>>> session: #{session.inspect}")
-      logger.debug(">>>>>>>>>>>> site_controller current_member: #{current_member}")
-      logger.debug(">>>>>>>>>>>> site_controller session_member: #{session[:member_id]}")
       if MemberSystem.allow_url?(current_member, url)
         show_page_without_member_validation
       else
         flash[:error] = "Member must be logged in."
-        redirect_to new_session_url
+        redirect_to MEMBER_LOGIN_PATH
       end
     end
   end

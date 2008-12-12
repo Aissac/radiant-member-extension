@@ -11,6 +11,7 @@ class MemberExtension < Radiant::Extension
     map.resources :sessions
     map.reset_password '/admin/members/:id/reset_password', :controller => 'admin/members', :action => 'reset_password'
     map.send_email '/admin/members/:id/send_email', :controller => 'admin/members', :action => 'send_email'
+    map.member_logout '/logout', :controller => 'sessions', :action => 'destroy'
     
   end
   
