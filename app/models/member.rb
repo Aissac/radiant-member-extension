@@ -25,7 +25,6 @@ class Member < ActiveRecord::Base
   validates_length_of       :password, :within => 4..40,    :if => :password_required?
 
   before_save :encrypt_password
-  before_create :make_activation_code 
   
   attr_accessible :email, :name, :password, :password_confirmation, :company
 
@@ -35,7 +34,7 @@ class Member < ActiveRecord::Base
   end
   named_scope :by_company, lambda{ |search_term| {:conditions => ["company = ?", search_term] } }
   
-  SORT_COLUMNS = ['name', 'email', 'company', 'activation_code', 'emailed_at']
+  SORT_COLUMNS = ['name', 'email', 'company', 'emailed_at']
 
   def self.members_paginate(params)
     options = {
@@ -56,7 +55,7 @@ class Member < ActiveRecord::Base
 
   def self.authenticate(email, password)
     return nil if email.blank? || password.blank?
-    m = find :first, :conditions => ['email = ? and activation_code IS NULL', email] # need to get the salt
+    m = find :first, :conditions => ['email = ?', email] # need to get the salt
     m && m.authenticated?(password) ? m : nil
   end
 
@@ -64,15 +63,30 @@ class Member < ActiveRecord::Base
     crypted_password == encrypt(password)
   end
   
-  def activate
-    self.activation_code = nil
+  def email_new_password
+    self.password = self.password_confirmation = make_token[0..6]
+    MemberMailer.deliver_password_email(self)
+    self.emailed_at = Time.now
+    self.save
+  end
+  
+  def remember_me
+    remember_me_for 2.weeks
+  end
+
+  def forget_me
+    self.remember_token_expires_at = nil
+    self.remember_token            = nil
     save(false)
   end
   
-  def active?
-    activation_code.nil?
+  def refresh_token
+    if remember_token?
+      self.remember_token = make_token 
+      save(false)      
+    end
   end
-
+  
 protected
   def encrypt_password
     return if password.blank?
@@ -95,10 +109,6 @@ protected
   def secure_digest(*args)
     Digest::SHA1.hexdigest(args.flatten.join('--'))
   end
-
-  def make_activation_code
-      self.activation_code = make_token
-  end
   
   def make_token
     secure_digest(Time.now, (1..10).map{ rand.to_s })
@@ -107,5 +117,19 @@ protected
   def password_required?
     crypted_password.blank? || !password.blank?
   end
+  
+  def remember_token?
+    (!remember_token.blank?) && 
+      remember_token_expires_at && (Time.now.utc < remember_token_expires_at.utc)
+  end
 
+  def remember_me_for(time)
+    remember_me_until time.from_now.utc
+  end
+
+  def remember_me_until(time)
+    self.remember_token_expires_at = time
+    self.remember_token            = make_token
+    save(false)
+  end
 end

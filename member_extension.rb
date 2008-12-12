@@ -8,17 +8,23 @@ class MemberExtension < Radiant::Extension
   
   define_routes do |map|
     map.resources :members, :path_prefix => '/admin', :controller  => 'admin/members', :collection => {:auto_complete_for_member_company => :any}
-    map.resource :session
-    map.activate '/activate', :controller => 'sessions', :action => 'activate'
+    map.resources :sessions
+    map.reset_password '/admin/members/:id/reset_password', :controller => 'admin/members', :action => 'reset_password'
+    map.send_email '/admin/members/:id/send_email', :controller => 'admin/members', :action => 'send_email'
+    
   end
   
   def activate
     WillPaginate.enable_named_scope
     admin.tabs.add "Members", "/admin/members", :after => "Layouts", :visibility => [:all]
+    SiteController.class_eval do
+      include AuthenticatedMembersSystem
+      include SiteControllerExtensions
+    end
   end
   
   def deactivate
-    # admin.tabs.remove "Member"
+    admin.tabs.remove "Member"
   end
   
 end
