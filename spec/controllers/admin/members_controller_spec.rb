@@ -221,7 +221,7 @@ describe Admin::MembersController do
   describe "autocomplete" do
 
     def do_get
-      get :auto_complete_for_member_company, :object => "member", :method => "company"
+      get :auto_complete_for_member_company, "member" => {"company" => 'asdf'}
     end
     
     it "should be succesfull" do
