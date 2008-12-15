@@ -1,9 +1,10 @@
-module SiteControllerExtensions
+module SiteControllerMemberExtensions
   def self.included(base)
     base.send(:include, InstanceMethods)
     base.class_eval do
       session :disabled => false
       alias_method_chain :show_page, :member_validation
+      use_cookies_flash
     end
   end
   

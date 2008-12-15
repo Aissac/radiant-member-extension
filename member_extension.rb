@@ -18,9 +18,10 @@ class MemberExtension < Radiant::Extension
   def activate
     WillPaginate.enable_named_scope
     admin.tabs.add "Members", "/admin/members", :after => "Layouts", :visibility => [:all]
+    ApplicationController.send(:include, ApplicationControllerMemberExtensions)
     SiteController.class_eval do
       include AuthenticatedMembersSystem
-      include SiteControllerExtensions
+      include SiteControllerMemberExtensions
     end
   end
   

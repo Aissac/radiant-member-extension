@@ -5,6 +5,8 @@ class SessionsController < ApplicationController
   no_login_required
   skip_before_filter :verify_authenticity_token
   
+  use_cookies_flash
+  
   def new
   end
 
@@ -32,6 +34,7 @@ class SessionsController < ApplicationController
   end
 
   protected
+  
     # Track failed login attempts
     def note_failed_signin
       flash[:error] = "Couldn't log you in as '#{params[:email]}'"
