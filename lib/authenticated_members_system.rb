@@ -111,7 +111,7 @@ module AuthenticatedMembersSystem
     # Called from #current_user.  Now, attempt to login by basic authentication information.
     def member_login_from_basic_auth
       authenticate_with_http_basic do |email, password|
-        self.current_member = Member.member_authenticate(email, password)
+        self.current_member = Member.authenticate(email, password)
       end
     end
     
@@ -135,7 +135,7 @@ module AuthenticatedMembersSystem
     # However, **all session state variables should be unset here**.
     def logout_keeping_member_session!
       # Kill server-side auth cookie
-      @current_member.member_forget_me if @current_member.is_a? Member
+      @current_member.forget_me if @current_member.is_a? Member
       @current_member = false     # not logged in, and don't do it for me
       kill_remember_member_cookie!     # Kill client-side auth cookie
       session[:member_id] = nil   # keeps the session but kill our variable
@@ -169,9 +169,9 @@ module AuthenticatedMembersSystem
     def handle_remember_member_cookie!(new_cookie_flag)
       return unless @current_member
       case
-      when valid_remember_member_cookie? then @current_member.member_refresh_token # keeping same expiry date
-      when new_cookie_flag        then @current_member.member_remember_me 
-      else                             @current_member.member_forget_me
+      when valid_remember_member_cookie? then @current_member.refresh_token # keeping same expiry date
+      when new_cookie_flag        then @current_member.remember_me 
+      else                             @current_member.forget_me
       end
       send_remember_member_cookie!
     end

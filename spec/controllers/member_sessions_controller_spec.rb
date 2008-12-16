@@ -4,7 +4,7 @@ describe MemberSessionsController do
   before do
     @member  = mock_model(Member, :id => 1, :email => 'test@test.com', :name => 'Member Name')
     @login_params = { :email => 'test@example.com', :password => 'test' }
-    Member.stub!(:member_authenticate).with(@login_params[:email], @login_params[:password]).and_return(@member)
+    Member.stub!(:authenticate).with(@login_params[:email], @login_params[:password]).and_return(@member)
   end
   
   def do_create(options={})
@@ -14,9 +14,9 @@ describe MemberSessionsController do
   describe "on succesful login," do
     
     before do
-      @member.stub!(:member_remember_me)
-      @member.stub!(:member_refresh_token) 
-      @member.stub!(:member_forget_me)
+      @member.stub!(:remember_me)
+      @member.stub!(:refresh_token) 
+      @member.stub!(:forget_me)
     end
     
     describe "i have no cookie token and I don't want to be remembered" do
@@ -24,7 +24,7 @@ describe MemberSessionsController do
         @member.stub!(:remember_token).and_return('nil') 
         @member.stub!(:remember_token_expires_at).and_return(15.minutes.from_now)
         @member.stub!(:remember_token?).and_return(false)
-        @login_params[:member_remember_me] = '0'
+        @login_params[:remember_me] = '0'
       end
       it "kills existing login" do
         controller.should_receive(:logout_keeping_member_session!)
@@ -67,16 +67,16 @@ describe MemberSessionsController do
       end
       
       it 'does not make new token' do 
-        @member.should_not_receive(:member_remember_me)
+        @member.should_not_receive(:remember_me)
         do_create
       end
       
       it 'does not refresh token' do 
-        @member.should_not_receive(:member_refresh_token)
+        @member.should_not_receive(:refresh_token)
         do_create
       end 
       
-      it 'kills user token' do @member.should_receive(:member_forget_me)
+      it 'kills user token' do @member.should_receive(:forget_me)
         do_create
       end
     end #i have no cookie token and I don't want to be remembered
@@ -85,7 +85,7 @@ describe MemberSessionsController do
         @member.stub!(:remember_token).and_return('valid_token') 
         @member.stub!(:remember_token_expires_at).and_return(15.minutes.from_now)
         @member.stub!(:remember_token?).and_return(true)
-        @login_params[:member_remember_me] = '0'    
+        @login_params[:remember_me] = '0'    
       end
       it "kills existing login" do
         controller.should_receive(:logout_keeping_member_session!)
@@ -128,7 +128,7 @@ describe MemberSessionsController do
       end
       
       it 'does not make new token' do 
-        @member.should_not_receive(:member_remember_me)
+        @member.should_not_receive(:remember_me)
         do_create
       end
       
@@ -141,7 +141,7 @@ describe MemberSessionsController do
         @member.stub!(:remember_token).and_return('nil') 
         @member.stub!(:remember_token_expires_at).and_return(15.minutes.from_now)
         @member.stub!(:remember_token?).and_return(false)
-        @login_params[:member_remember_me] = '1'
+        @login_params[:remember_me] = '1'
       end
       it "kills existing login" do
          controller.should_receive(:logout_keeping_member_session!)
@@ -184,12 +184,12 @@ describe MemberSessionsController do
        end
        
        it 'makes a new token' do 
-         @member.should_receive(:member_remember_me)
+         @member.should_receive(:remember_me)
          do_create
        end 
        
        it "does not refresh token" do
-         @member.should_not_receive(:member_refresh_token)
+         @member.should_not_receive(:refresh_token)
          do_create
        end
        
@@ -201,7 +201,7 @@ describe MemberSessionsController do
   
   describe "on failed login" do
     before do
-      Member.should_receive(:member_authenticate).with(anything(), anything()).and_return(nil)
+      Member.should_receive(:authenticate).with(anything(), anything()).and_return(nil)
     end
     it 'logs out keeping session' do 
       controller.should_receive(:logout_keeping_member_session!)
