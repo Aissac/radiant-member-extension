@@ -8,10 +8,10 @@ class MemberExtension < Radiant::Extension
   
   define_routes do |map|
     map.resources :members, :path_prefix => '/admin', :controller  => 'admin/members', :collection => {:auto_complete_for_member_company => :any}
-    map.resources :sessions
+    map.resources :member_sessions
     map.reset_password '/admin/members/:id/reset_password', :controller => 'admin/members', :action => 'reset_password'
     map.send_email '/admin/members/:id/send_email', :controller => 'admin/members', :action => 'send_email'
-    map.member_logout '/logout', :controller => 'sessions', :action => 'destroy'
+    map.member_logout '/logout', :controller => 'member_sessions', :action => 'destroy'
     
   end
   

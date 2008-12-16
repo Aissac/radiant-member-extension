@@ -16,10 +16,7 @@ module ApplicationControllerMemberExtensions
   module InstanceMethods
     def update_flash_cookies
       unless flash.empty?
-        # cookies[:flash] = {:value => flash.to_json, :expires => 1.hour.from_now}
         cookies[:flash] = flash.to_json
-      else
-        # cookies[:flash] = nil
       end
     end
   end

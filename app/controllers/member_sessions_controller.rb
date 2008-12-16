@@ -1,4 +1,4 @@
-class SessionsController < ApplicationController
+class MemberSessionsController < ApplicationController
 
   include AuthenticatedMembersSystem
   
@@ -12,17 +12,17 @@ class SessionsController < ApplicationController
 
   def create
     logout_keeping_member_session!
-    member = Member.authenticate(params[:email], params[:password])
+    member = Member.member_authenticate(params[:email], params[:password])
     if member
       self.current_member = member
-      new_cookie_flag = (params[:remember_me] == "1")
+      new_cookie_flag = (params[:member_remember_me] == "1")
       handle_remember_member_cookie! new_cookie_flag
       redirect_back_or_default(MEMBER_HOME_PATH)
       flash[:notice] = "Logged in successfully"
     else
       note_failed_signin
       @email       = params[:email]
-      @remember_me = params[:remember_me]
+      @member_remember_me = params[:member_remember_me]
       render :action => 'new'
     end
   end

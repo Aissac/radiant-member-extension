@@ -8,7 +8,7 @@ describe Member do
       :company => 'company_test', 
       :email => 'email@example.com', 
       :password => 'pass_test', 
-      :password_confirmation => 'pass_test'
+      :password_confirmation => 'pass_test',
     }
   end
   
@@ -122,6 +122,36 @@ describe Member do
     it "finds members grouped by company" do
       Member.should_receive(:find).with(:all, :group => 'company')
       Member.find_all_group_by_company
+    end
+  end
+
+  describe Member, 'authentication' do
+    
+    before do
+      @member = create_member
+    end
+      
+    it 'authenticates user' do
+      Member.member_authenticate('email@example.com', 'pass_test').should == @member
+    end
+    
+    it "doesn't authenticate user with bad password" do
+      Member.member_authenticate('email@example.com', 'invalid_password').should be_nil
+    end
+    
+    it "updates the emailed_at field" do
+      @member.email_new_password
+      @member.emailed_at.should_not be_nil
+    end
+    
+    it 'resets password' do
+      @member.update_attributes(:password => 'new password', :password_confirmation => 'new password')
+      Member.member_authenticate('email@example.com', 'new password').should == @member
+    end
+
+    it 'does not rehash password' do
+      @member.update_attributes(:email => 'email2@example.com')
+      Member.member_authenticate('email2@example.com', 'pass_test').should == @member
     end
   end
 end

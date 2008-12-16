@@ -53,13 +53,13 @@ class Member < ActiveRecord::Base
      find(:all, :group => 'company')
   end
 
-  def self.authenticate(email, password)
+  def self.member_authenticate(email, password)
     return nil if email.blank? || password.blank?
     m = find :first, :conditions => ['email = ?', email] # need to get the salt
-    m && m.authenticated?(password) ? m : nil
+    m && m.member_authenticated?(password) ? m : nil
   end
 
-  def authenticated?(password)
+  def member_authenticated?(password)
     crypted_password == encrypt(password)
   end
   
@@ -70,17 +70,17 @@ class Member < ActiveRecord::Base
     self.save
   end
   
-  def remember_me
-    remember_me_for 2.weeks
+  def member_remember_me
+    member_remember_me_for 2.weeks
   end
 
-  def forget_me
+  def member_forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
     save(false)
   end
   
-  def refresh_token
+  def member_refresh_token
     if remember_token?
       self.remember_token = make_token 
       save(false)      
@@ -123,11 +123,11 @@ protected
       remember_token_expires_at && (Time.now.utc < remember_token_expires_at.utc)
   end
 
-  def remember_me_for(time)
-    remember_me_until time.from_now.utc
+  def member_remember_me_for(time)
+    member_remember_me_until time.from_now.utc
   end
 
-  def remember_me_until(time)
+  def member_remember_me_until(time)
     self.remember_token_expires_at = time
     self.remember_token            = make_token
     save(false)

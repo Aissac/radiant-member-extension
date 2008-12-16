@@ -154,6 +154,44 @@ describe Admin::MembersController do
     end
   end
   
+  describe "handling GET reset_password" do
+    before do
+      @member = mock_model(Member, :id => 1)
+      Member.stub!(:find).and_return(@member)
+    end
+    
+    def do_get
+      get :reset_password
+    end
+    
+    it "should be succesful" do
+      do_get
+      response.should be_success
+    end
+    
+    it "renders reset_password template" do
+      do_get
+      response.should render_template('reset_password')
+    end
+  end
+  
+  describe "handling POST send_email" do
+    before do
+      @member = mock_model(Member, :id => 1)
+      Member.stub!(:find).and_return(@member)
+      @member.stub!(:email_new_password)
+    end
+    
+    def do_post
+      post :send_email
+    end
+    
+    it "is redirect" do
+      do_post
+      response.should redirect_to('admin/members')
+    end
+  end
+  
   describe "parsing list_params" do
     def do_get(options={})
       get :index, options
