@@ -153,5 +153,18 @@ describe Member do
       @member.update_attributes(:email => 'email2@example.com')
       Member.member_authenticate('email2@example.com', 'pass_test').should == @member
     end
+    
+    it 'sets remember token' do
+      @member.member_remember_me
+      @member.remember_token.should_not be_nil
+      @member.remember_token_expires_at.should_not be_nil
+    end
+    
+    it 'unsets remember token' do
+      @member.member_remember_me
+      @member.remember_token.should_not be_nil
+      @member.member_forget_me
+      @member.remember_token.should be_nil
+    end
   end
 end
