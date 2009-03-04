@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::MembersController do
-  scenario :users
+  dataset :users
   
-  before do
+  before :each do
     login_as :developer
   end
   
@@ -113,7 +113,7 @@ describe Admin::MembersController do
     end
 
     def do_get
-      get :edit
+      get :edit, :id => @member.id
     end
     
     it "should be succesful" do
@@ -134,7 +134,7 @@ describe Admin::MembersController do
     end
     
     def do_put(options={})
-      put :update, :member => {:name => 'name_test', :company => 'company_test', :email => 'email_test@example.com', :password => 'pass_test', :password_confirmation => 'pass_test'}.merge(options)
+      put :update, {:id => @member.id}.merge(options)
     end
     
     it "allows editing" do
@@ -161,7 +161,7 @@ describe Admin::MembersController do
     end
     
     def do_get
-      get :reset_password
+      get :reset_password, :id => @member.id
     end
     
     it "should be succesful" do
@@ -183,7 +183,7 @@ describe Admin::MembersController do
     end
     
     def do_post
-      post :send_email
+      post :send_email, :id => @member.id
     end
     
     it "is redirect" do
