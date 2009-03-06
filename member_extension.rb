@@ -2,9 +2,9 @@
 require_dependency 'application'
 
 class MemberExtension < Radiant::Extension
-  version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/member"
+  version "0.1"
+  description "Restrict site content to registered members."
+  url "http://blog.aissac.ro/radiant/member-extension"
   
   define_routes do |map|
     map.resources :members, :path_prefix => '/admin', :controller  => 'admin/members', :collection => {:auto_complete_for_member_company => :any}

@@ -4,9 +4,9 @@ Radiant Member Extension
 About
 ---
 
-An extension by [Aissac][aissac] that adds members support to the [Radiant CMS][radiant]. Using this extension you can restrict access to radiant pages only for members. It is based on Restfull Authentication System, so the member model has almost the same attributes. The members can be added or edited only from Radiant Admin.
+An extension by [Aissac][aissac] that adds members support to the [Radiant CMS][radiant]. Using this extension you can restrict access to radiant pages only for members. It is based on Restful Authentication System, so the member model has almost the same attributes. The members can be added or edited only from Radiant Admin.
 
-The Member Extension is Radiant 0.7.1 compatible. ???
+The Member Extension is Radiant 0.7.1 compatible.
 
 Installation
 ---
@@ -29,30 +29,36 @@ Install the Member Extension:
     
 Then run the rake tasks:
 
-    rake [ENV] radiant:extensions:member:migrate
-    rake [ENV] radiant:extensions:member:update.
+    rake radiant:extensions:member:migrate
+    rake radiant:extensions:member:update
 
-The next step is to .....
+Configuration
+---
 
-    MEMBER_LOGIN_PATH = '/members' # this is the Radiant page where you have the login form .
-    MEMBER_HOME_PATH = '/articles' # this is where the member will be redirected after login.
-    MEMBERS_ROOT = 'articles' # all the pages under this node can be accessed only by members.
-    
-Because Member Extension tries to copy the Restfull Authentication system, for additional protection of your application you have to create a `initializers/site_key.rb` file in your `config` folder. In this file set the `REST_AUTH_SITE_KEY` to some unussual string and the `REST_AUTH_DIGEST_STRETCHES` key to an integer value, like below
+If you are using Radiant 0.7 or newer, you can place this configuration in `config/initializers/member.rb` of your project:
 
-    REST_AUTH_SITE_KEY = 'f7c8cdc38ec686f6b9086013f7adda660d641106'
+    MEMBER_LOGIN_PATH = '/members' # The URL for the login form of your website.
+    MEMBER_HOME_PATH = '/articles' # Default home for logged in members.
+    MEMBERS_ROOT = 'articles'      # Everything under this path requires member login.
+                                   # Notice the lack of leading and trailing slashes.
+
+    REST_AUTH_SITE_KEY = '<some big secret key here>'
     REST_AUTH_DIGEST_STRETCHES = 10
 
-Also, because we use `action_mailer` to send emails to the members you should comment the ` # config.frameworks -= [ :action_mailer ]` in your environment file.
+For installations of Radiant 0.6.9 or older this configuration goes into `environment.rb`.
+
+For security purposes you must define `REST_AUTH_SITE_KEY` and `REST_AUTH_DIGEST_STRETCHES`. This is based on the Restful Authentication.
+
+Also, because we use `action_mailer` to send emails to the members you should comment the ` # config.frameworks -= [ :action_mailer ]` in your `environment.rb` file.
 
 Usage
 ---
 
-Members extension provides you with a page where you can administer your members. Only a site admin can add or edit members. The admin can also reset a member\'s password, action which will send an email with the new password.
+### Site integration
 
-### Working example
+You need to create a page in your site where members can log in. The URL for this page must be the one specified by `MEMBER_LOGIN_PATH`.
 
-Login form:
+The form field names must match the following:
 
     <h2>Log in</h2>
     <form action="/member_sessions" method="post">
@@ -67,13 +73,25 @@ Login form:
 
 Session links:
 
-    <a href="/members">Login</a>
+    <a href="/members">Login</a><!-- This links to the MEMBER_LOGIN_PATH configuration parameter. -->
     <a href="/logout">Logout</a>
+    
+### Cookie flash
+
+TODO
+
+### Administration
+
+Member extension a tab to the Radiant admin interface to let you add and update members. You can choose to reset a member's password and email them the new password.
 
 TODO
 ---
 
-Delete/Disable members
+* Styling of admin interface and more user friendlyness.
+* Import member list from CSV/XLS.
+* Rake task to send out emails with 
+* Delete/Disable members.
+* Tags for URLs: members home, login/logout pages.
 
 Contributors
 ---
