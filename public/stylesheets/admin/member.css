@@ -21,5 +21,7 @@ tr.grey_bg td, tr.grey_bg th    {padding:2px 4px;margin:10px 0 0 0;text-align:le
                                 {text-decoration: underline; }
 .results a.sort_asc             {background:transparent url(/images/admin/asc.gif) no-repeat right center;padding-right:15px;}
 .results a.sort_desc            {background:transparent url(/images/admin/desc.gif) no-repeat right center;padding-right:15px;}
-.form th                        {text-align:right;width:150px;padding:0 10px 5px 0;}
-.form td                        {text-align:left;padding-bottom:5px;}
+.form                           {background-color:#F5F1E2;padding:20px 0;}
+.form table                     {width:100%;}
+.form th                        {text-align:right;width:250px;padding:5px 10px 5px 0;vertical-align:middle;}
+.form td                        {text-align:left;vertical-align:middle;padding:5px 0;}

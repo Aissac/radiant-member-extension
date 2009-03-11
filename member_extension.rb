@@ -23,6 +23,9 @@ class MemberExtension < Radiant::Extension
       include AuthenticatedMembersSystem
       include SiteControllerMemberExtensions
     end
+    Page.class_eval {
+      include MemberTags
+    }
   end
   
   def deactivate

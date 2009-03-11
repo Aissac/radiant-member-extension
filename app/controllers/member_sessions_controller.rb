@@ -17,13 +17,13 @@ class MemberSessionsController < ApplicationController
       self.current_member = member
       new_cookie_flag = (params[:remember_me] == "1")
       handle_remember_member_cookie! new_cookie_flag
-      redirect_back_or_default(MEMBER_HOME_PATH)
       flash[:notice] = "Logged in successfully"
+      redirect_back_or_default(MEMBER_HOME_PATH)
     else
       note_failed_signin
       @email       = params[:email]
       @remember_me = params[:remember_me]
-      render :action => 'new'
+      redirect_to MEMBER_LOGIN_PATH
     end
   end
 
