@@ -213,9 +213,9 @@ describe MemberSessionsController do
       flash[:error].should =~ /Couldn't log you in as 'test@example.com'/ 
     end
     
-    it 'renders the log in page' do
+    it 'redirects on failure' do
       do_create
-      response.should render_template('new')
+      response.should redirect_to(MEMBER_LOGIN_PATH)
     end
     
     it "doesn't log me in" do

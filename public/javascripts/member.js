@@ -4,7 +4,7 @@ var Flash = Class.create({
       expires:3600,
       path: '/'
     });
-    this.flash = jar.get('flash') || {};
+    this.flash = jar.get('flash') || { };
     jar.remove('flash');
   },
   

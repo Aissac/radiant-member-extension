@@ -5,7 +5,7 @@
   <% form_for :member, :url => member_path, :html => { :method => :put }  do |f| -%>
     <table>
       <%= render :partial => "form", :locals => {:f => f} %>
-      <tr><th>&nbsp;</th><td><%= submit_tag 'Edit' %> or <%= link_to "Cancel", members_path %></td></tr>
+      <tr><th>&nbsp;</th><td><%= submit_tag 'Update' %> or <%= link_to "Cancel", members_path %></td></tr>
     </table>
   <% end -%>
 </div>

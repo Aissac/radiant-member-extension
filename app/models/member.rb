@@ -19,10 +19,7 @@ class Member < ActiveRecord::Base
   validates_presence_of     :company
 
   attr_accessor :password
-  validates_presence_of     :password,                      :if => :password_required?
-  validates_presence_of     :password_confirmation,         :if => :password_required?
-  validates_confirmation_of :password,                      :if => :password_required?
-  validates_length_of       :password, :within => 4..40,    :if => :password_required?
+  validates_confirmation_of :password, :if => :password_required?
 
   before_save :encrypt_password
   
@@ -51,6 +48,42 @@ class Member < ActiveRecord::Base
   
   def self.find_all_group_by_company
      find(:all, :group => 'company')
+  end
+  
+  def self.import_members(file)
+    imported = 0
+    duplicate = 0
+    @not_valid = []
+    members_from_csv = FasterCSV.parse(file, :headers => true)
+    
+    members_from_csv.each do |m|
+      member = self.new(:name => m[0], :email => m[1], :company => m[2])
+      if member.save
+        imported = imported + 1
+      else
+        if member.errors.on(:email) == "has already been taken"
+          duplicate = duplicate + 1
+        else
+          @not_valid << [m[0], m[1], m[2], member.errors.full_messages.join(', ')]
+        end
+      end
+    end
+    [imported, duplicate, @not_valid]
+  end
+  
+  def self.update_invalid_members(params)
+    imported = 0
+    @not_valid = []
+    
+    params.each do |m|
+      member = self.new(m)
+      if member.save
+        imported = imported + 1
+      else
+        @not_valid << [m[:name], m[:email], m[:company], member.errors.full_messages.join(', ')]
+      end      
+    end
+    [imported, @not_valid]
   end
 
   def self.authenticate(email, password)

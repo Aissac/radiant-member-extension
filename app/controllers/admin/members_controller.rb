@@ -1,5 +1,7 @@
 class Admin::MembersController < ApplicationController
 
+  require 'fastercsv'
+
   LIST_PARAMS_BASE = [:page, :sort_by, :sort_order]
   FILTER_COLUMNS = [:name, :email, :company]
   before_filter :add_member_assets
@@ -51,7 +53,26 @@ class Admin::MembersController < ApplicationController
   def send_email
     @member = Member.find(params[:id])
     @member.email_new_password
+    flash[:notice] = "The password for #{@member.name} was reset and sent via email."
     redirect_to('/admin/members')
+  end
+  
+  def import_members
+  end
+  
+  def import_from_csv
+    imported, duplicate, @not_valid = Member.import_members(params[:file][:csv])    
+    flash.now[:notice] = "Imported #{imported} members. " + "#{duplicate} members were duplicate."
+    render :action => 'edit_invalid_members'
+  end
+  
+  def edit_invalid_members
+  end
+  
+  def update_invalid_members
+    imported, @not_valid = Member.update_invalid_members(params[:member])
+    flash.now[:notice] = "Imported #{imported} members."
+    @not_valid.empty? ? (redirect_to members_path) : (render :action => 'edit_invalid_members')
   end
   
   def list_params

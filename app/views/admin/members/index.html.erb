@@ -2,6 +2,7 @@
     <%= hidden_field_tag(:reset, 1) %>
     <table class="search">
       <tr class="grey_bg"><td>Search:</td>
+        <td><%= link_to 'Import members from CSV file', import_members_path %></td>
         <td><%= link_to 'Add member', new_member_path %></td>
       </tr>
       <tr>

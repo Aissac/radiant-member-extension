@@ -1,0 +1,10 @@
+<h1>Import users from CSV</h1>
+<div class="form">
+  <% form_for(:member, :url => import_from_csv_path, :html => {:multipart => true} ) do %>
+    <table>
+      <tr><td><label for="file_csv">Choose a CSV file:</label></td></tr>
+      <tr><td><%= file_field 'file','csv' %></td></tr>
+      <tr><td><%= submit_tag 'Import data' %></td></tr>
+    </table>
+  <% end -%>
+</div>

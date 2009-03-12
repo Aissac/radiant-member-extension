@@ -21,7 +21,10 @@ tr.grey_bg td, tr.grey_bg th    {padding:2px 4px;margin:10px 0 0 0;text-align:le
                                 {text-decoration: underline; }
 .results a.sort_asc             {background:transparent url(/images/admin/asc.gif) no-repeat right center;padding-right:15px;}
 .results a.sort_desc            {background:transparent url(/images/admin/desc.gif) no-repeat right center;padding-right:15px;}
-.form                           {background-color:#F5F1E2;padding:20px 0;}
+.form, .invalid_members_form    {background-color:#F5F1E2;padding:20px 10px;}
 .form table                     {width:100%;}
 .form th                        {text-align:right;width:250px;padding:5px 10px 5px 0;vertical-align:middle;}
 .form td                        {text-align:left;vertical-align:middle;padding:5px 0;}
+.invalid_members_form table     {margin-bottom:20px;}
+.invalid_members_form th        {text-align:left;padding:5px;}
+.invalid_members_form td        {padding:5px;border-top:1px solid #ccc;}
