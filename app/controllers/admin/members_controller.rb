@@ -62,8 +62,8 @@ class Admin::MembersController < ApplicationController
   
   def import_from_csv
     imported, duplicate, @not_valid = Member.import_members(params[:file][:csv])    
-    flash.now[:notice] = "Imported #{imported} members. " + "#{duplicate} members were duplicate."
-    render :action => 'edit_invalid_members'
+    flash[:notice] = "Imported #{imported} members. " + "#{duplicate} members were duplicate."
+    @not_valid.empty? ? (redirect_to members_path) : (render :action => 'edit_invalid_members')
   end
   
   def edit_invalid_members
@@ -71,7 +71,7 @@ class Admin::MembersController < ApplicationController
   
   def update_invalid_members
     imported, @not_valid = Member.update_invalid_members(params[:member])
-    flash.now[:notice] = "Imported #{imported} members."
+    flash[:notice] = "Imported #{imported} members."
     @not_valid.empty? ? (redirect_to members_path) : (render :action => 'edit_invalid_members')
   end
   

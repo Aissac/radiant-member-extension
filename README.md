@@ -54,6 +54,15 @@ Also, because we use `action_mailer` to send emails to the members you should co
 Usage
 ---
 
+#Available Tags
+
+* See the “available tags” documentation built into the Radiant page admin for more details.
+* Use the `<r:member:login />` to render the link for the member login page.
+* Use the `<r:member:logout />` to render the link for the logout action.
+* Use the `<r:member:home />` to render the link for members home page.
+* Use the `<r:member:root />` to render the link for the path that requires member login.
+* Use the `<r:member:sessions />` in the login form as action.
+
 ### Site integration
 
 You need to create a page in your site where members can log in. The URL for this page must be the one specified by `MEMBER_LOGIN_PATH`.
@@ -61,7 +70,7 @@ You need to create a page in your site where members can log in. The URL for thi
 The form field names must match the following:
 
     <h2>Log in</h2>
-    <form action="/member_sessions" method="post">
+    <form action="<r:member:sessions />" method="post">
       <p><label>Email</label><br />
       <input id="email" name="email" type="text" /></p>
       <p><label>Password</label><br/>
@@ -70,28 +79,54 @@ The form field names must match the following:
       <input id="remember_me" name="remember_me" type="checkbox" value="1" /></p>
       <p><input name="commit" type="submit" value="Log in" /></p>
     </form>
-
-Session links:
-
-    <a href="/members">Login</a><!-- This links to the MEMBER_LOGIN_PATH configuration parameter. -->
-    <a href="/logout">Logout</a>
     
 ### Cookie flash
+...... some introduction .....
 
-TODO
+In order to use the cookie flash you need to add the Javascript files:
+
+    <script src="/javascripts/prototype.js" type="text/javascript"></script>
+    <script src="/javascripts/cookiejar.js" type="text/javascript"></script>
+    <script src="/javascripts/member.js" type="text/javascript"></script>
+    
+The flash is set in the controller and we have three .... :
+
+* When the member logs in succesfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `MEMBER_HOME_PATH` page the following snippet:
+
+    <div id="flash" style="display:none"></div>
+    <script type="text/javascript">
+      document.observe("dom:loaded", function () {
+        flash.show('flash', 'notice')
+      })
+    </script>
+    
+* When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `MEMBER_LOGIN_PATH` page the following snippet:
+
+    <div id="flash" style="display:none"></div>
+    <script type="text/javascript">
+      document.observe("dom:loaded", function () {
+        flash.show('flash', 'error')
+      })
+    </script>
+    
+* When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see tge flash you need to put in `MEMBER_LOGIN_PATH` page the following snippet:
+
+    <div id="flash" style="display:none"></div>
+    <script type="text/javascript">
+      document.observe("dom:loaded", function () {
+        flash.show('flash', 'notice')
+      })
+    </script>
 
 ### Administration
 
-Member extension a tab to the Radiant admin interface to let you add and update members. You can choose to reset a member's password and email them the new password.
+Member extension adds a tab to the Radiant admin interface to let you add and update members. You can choose to reset a member's password and email them the new password.
 
 TODO
 ---
 
-* Styling of admin interface and more user friendlyness.
-* Import member list from CSV/XLS.
-* Rake task to send out emails with 
+* Rake task to send out emails.
 * Delete/Disable members.
-* Tags for URLs: members home, login/logout pages.
 
 Contributors
 ---
