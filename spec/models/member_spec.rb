@@ -30,14 +30,20 @@ describe Member do
       m.should be_valid
     end
     
-    ['email', 'name', 'password', 'password_confirmation', 'company'].each do |required_attribute|
+    ['email', 'name', 'company'].each do |required_attribute|
       it "requires #{required_attribute} attribute" do
         lambda do
           m = create_member(required_attribute.to_sym => nil)
           m.errors_on(required_attribute.to_sym).should_not be_nil
         end.should_not change(Member, :count)
       end
+    end
       
+    it "needs password confirmation" do
+      lambda do
+        m = create_member(:password => 'asdasd', :password_confirmation => 'dsadsa')
+        m.errors_on(:password_confirmation).should_not be_nil
+      end.should_not change(Member, :count)
     end
     
     ['Andre The Giant (7\'4", 520 lb.) -- has a posse', '1234567890_234567890_234567890_234567890_234567890_234567890_234567890_234567890_234567890_234567890'].each do |name_string|

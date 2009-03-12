@@ -79,7 +79,7 @@ describe Admin::MembersController do
       end.should change(Member, :count).by(1)
     end
     
-    ['email', 'name', 'password', 'password_confirmation', 'company' ].each do |required_attribute|
+    ['email', 'name', 'company' ].each do |required_attribute|
       it "requires #{required_attribute} on create" do
         lambda do
           do_post(required_attribute.to_sym => nil)
@@ -145,7 +145,7 @@ describe Admin::MembersController do
       end.should_not change(Member, :count)
     end
 
-    ['name', 'email', 'company', 'password', 'password_confirmation'].each do |required_attribute|
+    ['name', 'email', 'company'].each do |required_attribute|
       it "requires #{required_attribute} on update" do
         @member.should_receive(:update_attributes).and_return(false)
         do_put(required_attribute.to_sym => nil)
@@ -180,6 +180,7 @@ describe Admin::MembersController do
       @member = mock_model(Member, :id => 1)
       Member.stub!(:find).and_return(@member)
       @member.stub!(:email_new_password)
+      @member.stub!(:name)
     end
     
     def do_post
