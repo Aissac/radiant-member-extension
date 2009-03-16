@@ -193,6 +193,61 @@ describe Admin::MembersController do
     end
   end
   
+  describe "handling POST import_from_csv" do
+    
+    before do
+      Member.stub!(:import_members).and_return([1,1,[]])
+    end
+    
+    def do_post
+      post :import_from_csv, :file => { :csv => 'csv_data' }
+    end
+    
+    it "imports members from CSV" do
+      Member.should_receive(:import_members).with('csv_data')
+      do_post
+    end
+    
+    it "it redirects to members path" do
+      do_post
+      response.should redirect_to('/admin/members')
+    end
+    
+    it "renders the edit invalid members template if there are invalid rows in the CSV" do
+      Member.stub!(:import_members).and_return([1, 1, ['something']])
+      do_post
+      response.should render_template("edit_invalid_members")
+    end
+  end
+  
+  describe "handling POST update_invalid_members" do
+    
+    before do
+      Member.stub!(:update_invalid_members).and_return([1, []])
+    end
+    
+    def do_post
+      post :update_invalid_members
+    end
+    
+    it "imports members from CSV" do
+      Member.should_receive(:update_invalid_members)
+      do_post
+    end
+    
+    it "it redirects to members path" do
+      do_post
+      response.should be_redirect
+    end
+    
+    it "renders the edit invalid members template if there are invalid rows in the CSV" do
+      Member.stub!(:update_invalid_members).and_return([1, ['something']])
+      do_post
+      response.should render_template("edit_invalid_members")
+    end
+    
+  end
+  
   describe "parsing list_params" do
     def do_get(options={})
       get :index, options
@@ -267,6 +322,5 @@ describe Admin::MembersController do
       do_get
       response.should be_success
     end
-    
   end
 end

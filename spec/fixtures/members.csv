@@ -1,0 +1,4 @@
+Name,Email,Company
+Duplicate John,john@example.com,ACME Inc.
+Invalid George,bad_email,Microsoft
+Valid Jerry,jerry@example.com,MGM

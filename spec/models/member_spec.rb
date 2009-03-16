@@ -173,4 +173,44 @@ describe Member do
       @member.remember_token.should be_nil
     end
   end
+  
+  describe Member, "import from CSV" do
+    
+    before do
+      @csv = open(File.dirname(__FILE__) + '/../fixtures/members.csv')
+      Member.delete_all
+      create_member(:name => 'Duplicate John', :company => 'ACME Inc.', :email => 'john@example.com')
+      @imported_count, @duplicate_count, @not_valid = Member.import_members(@csv)
+    end
+    
+    it "imports" do
+      @imported_count.should == 1
+    end
+    
+    it "does not import duplicate members" do
+      @duplicate_count.should == 1
+    end
+    
+    it "does not import invalid members" do
+      @not_valid[0].should == ["Invalid George", "bad_email", "Microsoft", "Email is invalid"]
+    end
+  end
+  
+  describe Member, "update invalid members after CSV import" do
+    
+    before do
+      params = [
+        {:name => "Valid Jerry", :email => "jerry@email.com", :company => "MGM"},
+        {:name => "Invalid George", :email => "bad_email", :company => "Microsoft"}]
+      @imported_count, @not_valid = Member.update_invalid_members(params)
+    end
+    
+    it "imports" do
+      @imported_count.should == 1
+    end
+    
+    it "does not import invalid members" do
+      @not_valid[0].should == ["Invalid George", "bad_email", "Microsoft", "Email is invalid"]
+    end
+  end
 end
