@@ -35,7 +35,7 @@ or
 
 Install the Member Extension:
     
-    git submodule add add git://github.com/aissac/member.git vendor/extensions/member
+    git submodule add git://github.com/Aissac/radiant-member-extension.git vendor/extensions/member
     
 Then run the rake tasks:
 
@@ -94,7 +94,7 @@ The form field names must match the following:
 
 Radiant's caching prevents us from using Rails' flash to notify the user of failed login attempts. To work around this, Member Extension uses cookies to store flash messages and Javascript to display them in the view.
 
-In order to use the cookie flash you need to add the Javascript files:
+In order to use the cookie flash you need to add these Javascript files to your page:
 
     <script src="/javascripts/prototype.js" type="text/javascript"></script>
     <script src="/javascripts/cookiejar.js" type="text/javascript"></script>
@@ -102,7 +102,7 @@ In order to use the cookie flash you need to add the Javascript files:
     
 `MemberSessionsController` which handles the authentication logic, can assign three flash messages:
 
-* When the member logs in successfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `MEMBER_HOME_PATH` page the following snippet:
+When the member logs in successfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `MEMBER_HOME_PATH` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -111,7 +111,7 @@ In order to use the cookie flash you need to add the Javascript files:
       })
     </script>
     
-* When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `MEMBER_LOGIN_PATH` page the following snippet:
+When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `MEMBER_LOGIN_PATH` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -120,7 +120,7 @@ In order to use the cookie flash you need to add the Javascript files:
       })
     </script>
     
-* When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see the flash you need to put in `MEMBER_LOGIN_PATH` page the following snippet:
+When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see the flash you need to put in `MEMBER_LOGIN_PATH` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">

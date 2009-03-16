@@ -2,7 +2,7 @@
 require_dependency 'application'
 
 class MemberExtension < Radiant::Extension
-  version "0.1"
+  version "0.5"
   description "Restrict site content to registered members."
   url "http://blog.aissac.ro/radiant/member-extension"
   
