@@ -4,9 +4,19 @@ Radiant Member Extension
 About
 ---
 
-An extension by [Aissac][aissac] that adds members support to the [Radiant CMS][radiant]. Using this extension you can restrict access to radiant pages only for members. It is based on Restful Authentication System, so the member model has almost the same attributes. The members can be added or edited only from Radiant Admin.
+An extension by [Aissac][aissac] that adds members support to [Radiant CMS][radiant]. Using this extension you can restrict access to pages on your public site to be accessible only to members that have an account. It is based on Restful Authentication System, so the member model has almost the same attributes. The members can be added or edited only from Radiant Admin.
 
 The Member Extension is Radiant 0.7.1 compatible.
+
+Features
+---
+
+* Restricts access to site pages below a certain path, requiring member login.
+* Members can be managed from Radiant Admin. There is *NO* member self-registration.
+* Reset and email member's password from Admin interface;
+* Bulk import members from a CSV file; fields: name, company, email;
+* Radius tags for integrating login/logout functionality into the site;
+* Cookie-based flash messages.
 
 Installation
 ---
@@ -21,11 +31,11 @@ And the will\_paginate gem/plugin:
     
 or
 
-    sudo gem install mislav-will_paginate
+    sudo gem install mislav-will_paginate --source http://gems.github.com
 
 Install the Member Extension:
     
-    git submodule add add git://github.com/aissac/member.git vendor/extensions/member
+    git submodule add git://github.com/Aissac/radiant-member-extension.git vendor/extensions/member
     
 Then run the rake tasks:
 
@@ -56,7 +66,7 @@ Usage
 
 #Available Tags
 
-* See the “available tags” documentation built into the Radiant page admin for more details.
+* See the "available tags" documentation built into the Radiant page admin for more details.
 * Use the `<r:member:login />` to render the link for the member login page.
 * Use the `<r:member:logout />` to render the link for the logout action.
 * Use the `<r:member:home />` to render the link for members home page.
@@ -81,17 +91,18 @@ The form field names must match the following:
     </form>
     
 ### Cookie flash
-...... some introduction .....
 
-In order to use the cookie flash you need to add the Javascript files:
+Radiant's caching prevents us from using Rails' flash to notify the user of failed login attempts. To work around this, Member Extension uses cookies to store flash messages and Javascript to display them in the view.
+
+In order to use the cookie flash you need to add these Javascript files to your page:
 
     <script src="/javascripts/prototype.js" type="text/javascript"></script>
     <script src="/javascripts/cookiejar.js" type="text/javascript"></script>
     <script src="/javascripts/member.js" type="text/javascript"></script>
     
-The flash is set in the controller and we have three .... :
+`MemberSessionsController` which handles the authentication logic, can assign three flash messages:
 
-* When the member logs in succesfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `MEMBER_HOME_PATH` page the following snippet:
+When the member logs in successfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `MEMBER_HOME_PATH` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -100,7 +111,7 @@ The flash is set in the controller and we have three .... :
       })
     </script>
     
-* When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `MEMBER_LOGIN_PATH` page the following snippet:
+When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `MEMBER_LOGIN_PATH` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -109,7 +120,7 @@ The flash is set in the controller and we have three .... :
       })
     </script>
     
-* When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see tge flash you need to put in `MEMBER_LOGIN_PATH` page the following snippet:
+When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see the flash you need to put in `MEMBER_LOGIN_PATH` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -127,9 +138,13 @@ TODO
 
 * Rake task to send out emails.
 * Delete/Disable members.
+* Use Radiant::Config to store constants (urls, flash messages).
 
 Contributors
 ---
+
+* Cristi Duma
+* Istvan Hoka
 
 [aissac]: http://aissac.ro
 [radiant]: http://radiantcms.org/
