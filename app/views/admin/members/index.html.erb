@@ -31,18 +31,22 @@
           <th class><%= sortable_column_head("Email", :email) %></th>
           <th class><%= sortable_column_head("Company", :company) %></th>
           <th class><%= sortable_column_head("Emailed at", :emailed_at) %></th>
-          <th>&nbsp;</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-          <% @members.each do |si| %>
+          <% @members.each do |m| %>
             <tr>
-            <td><%= si.name %></td>
-            <td><%= si.email %></td>
-            <td><%= si.company %></td>
+            <td><%= m.name %></td>
+            <td><%= m.email %></td>
+            <td><%= m.company %></td>
             <td>
-              <%= si.emailed_at ? date_format(si.emailed_at) : "Email not sent" %> (<%= (link_to 'reset password', reset_password_path(:id => si.id)) %>)
-            <td><%= link_to 'Edit', edit_member_path(si.id) %></td>
+              <%= m.emailed_at ? date_format(m.emailed_at) : "Email not sent" %> (<%= (link_to 'reset password', reset_password_path(:id => m.id)) %>)
+            <td>
+              <%= link_to 'Edit', edit_member_path(m.id) %>
+              <%= link_to 'Disable', '#' %>
+              <%= link_to 'Delete', member_path(m.id), :method => :delete, :confirm => "Really delete #{m.name}?" %>
+            </td>
             </tr>
           <% end -%>
           <% if @members.empty? %>

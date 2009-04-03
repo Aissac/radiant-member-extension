@@ -46,6 +46,13 @@ class Admin::MembersController < ApplicationController
     end
   end
   
+  def destroy
+    @member = Member.find(params[:id])
+    @member.destroy
+    flash[:notice] = "Member deleted."
+    redirect_to members_path
+  end
+  
   def reset_password
     @member = Member.find(params[:id])
   end

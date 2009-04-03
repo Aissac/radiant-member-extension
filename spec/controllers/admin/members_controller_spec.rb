@@ -152,6 +152,34 @@ describe Admin::MembersController do
         response.should render_template(:edit)
       end
     end
+    
+    describe "handling DELETE destroy" do
+      
+      before do
+        @member = mock_model(Member)
+        Member.stub!(:find).and_return(@member)
+        @member.stub!(:destroy)
+      end
+      
+      def do_delete
+        delete :destroy, :id => @member.id
+      end
+      
+      it "redirects on success" do
+        do_delete
+        response.should be_redirect
+      end
+      
+      it "find the coresponding member" do
+        Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+        do_delete
+      end
+      
+      it "destroys the member" do
+        @member.should_receive(:destroy)
+        do_delete
+      end
+    end
   end
   
   describe "handling GET reset_password" do
