@@ -87,9 +87,12 @@ class Member < ActiveRecord::Base
   end
   
   def activate!
-    self.crypted_password = disabled_password
-    self.disabled_password = nil
-    self.save
+    if self.disabled_password.blank?
+      email_new_password
+    else
+      self.crypted_password = disabled_password
+      self.save
+    end
   end
   
   def deactivate!
