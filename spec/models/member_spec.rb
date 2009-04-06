@@ -145,6 +145,10 @@ describe Member do
       Member.authenticate('email@example.com', 'invalid_password').should be_nil
     end
     
+    it "doesn't authenticate inactive user" do
+      Member.authenticate('test@email.com', '').should be_nil
+    end
+    
     it "updates the emailed_at field" do
       @member.email_new_password
       @member.emailed_at.should_not be_nil
@@ -211,6 +215,27 @@ describe Member do
     
     it "does not import invalid members" do
       @not_valid[0].should == ["Invalid George", "bad_email", "Microsoft", "Email is invalid"]
+    end
+  end
+  
+  describe Member, "activate and deactivate" do
+    
+    before do
+      @member = create_member
+    end
+    
+    it "activates member" do
+      @member.crypted_password = nil
+      @member.save
+      @member.activate!
+      @member.crypted_password.should_not be_nil
+    end
+    
+    it "deactivates member" do
+      disabled_password = @member.crypted_password
+      @member.deactivate!
+      @member.disabled_password.should == disabled_password
+      @member.crypted_password.should == nil
     end
   end
 end

@@ -66,30 +66,6 @@ describe Admin::MembersController do
     end
   end
   
-  describe "handling POST create" do
-    def do_post(options = {})   #creates a new member
-      post :create, :member => { :name => 'test', :email => 'test@example.com',
-        :password => 'testpass', :password_confirmation => 'testpass', :company => 'test&co' }.merge(options)
-    end
-    
-    it "creates member" do
-      lambda do
-        do_post
-        response.should be_redirect
-      end.should change(Member, :count).by(1)
-    end
-    
-    ['email', 'name', 'company' ].each do |required_attribute|
-      it "requires #{required_attribute} on create" do
-        lambda do
-          do_post(required_attribute.to_sym => nil)
-          assigns[:member].errors.on(required_attribute).should_not be_nil
-          response.should be_success
-        end.should_not change(Member, :count)
-      end
-    end
-  end
-  
   describe "handling GET new" do
     def do_get
       get :new
@@ -103,6 +79,45 @@ describe Admin::MembersController do
     it "renders new template" do
       do_get
       response.should render_template('new')
+    end
+  end
+  
+  describe "handling POST create" do
+    
+    before do
+      @member = mock_model(Member, :save => true)
+      Member.stub!(:new).and_return(@member)
+    end
+    
+    def do_post(options = {})
+      post :create, :member => options
+    end
+    
+    it "creates a new member from params" do
+      Member.should_receive(:new).with("email" => 'test@email.com')
+      do_post(:email => 'test@email.com')
+    end
+    
+    it "redirects on success" do
+      do_post
+      response.should be_redirect
+    end
+    
+    it "assigns flash notice on success" do
+      do_post
+      flash[:notice].should == "Account created."
+    end
+    
+    it "renders new template on failure" do
+      @member.should_receive(:save).and_return(false)
+      do_post
+      response.should render_template(:new)
+    end
+    
+    it "assigns flash error on failure" do
+      @member.should_receive(:save).and_return(false)
+      do_post
+      flash[:error].should == "Account not created."
     end
   end
   
@@ -129,7 +144,7 @@ describe Admin::MembersController do
   
   describe "handling PUT update" do
     before do
-      @member = mock_model(Member, :id => 1, :name => 'name', :company => 'company', :email => 'email@example.com', :password => 'pass', :password_confirmation => 'pass')
+      @member = mock_model(Member, :update_attributes => true)
       Member.stub!(:find).and_return(@member)
     end
     
@@ -137,54 +152,75 @@ describe Admin::MembersController do
       put :update, {:id => @member.id}.merge(options)
     end
     
-    it "allows editing" do
-      @member.should_receive(:update_attributes).and_return(true)
-      lambda do
-        do_put
-        response.should be_redirect
-      end.should_not change(Member, :count)
-    end
-
-    ['name', 'email', 'company'].each do |required_attribute|
-      it "requires #{required_attribute} on update" do
-        @member.should_receive(:update_attributes).and_return(false)
-        do_put(required_attribute.to_sym => nil)
-        response.should render_template(:edit)
-      end
+    it "finds the corresponding member" do
+      Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+      do_put
     end
     
-    describe "handling DELETE destroy" do
-      
-      before do
-        @member = mock_model(Member)
-        Member.stub!(:find).and_return(@member)
-        @member.stub!(:destroy)
-      end
-      
-      def do_delete
-        delete :destroy, :id => @member.id
-      end
-      
-      it "redirects on success" do
-        do_delete
-        response.should be_redirect
-      end
-      
-      it "find the coresponding member" do
-        Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
-        do_delete
-      end
-      
-      it "destroys the member" do
-        @member.should_receive(:destroy)
-        do_delete
-      end
+    it "updates the member attributes" do
+      @member.should_receive(:update_attributes).and_return(true)
+      do_put
+    end
+    
+    it "redirects on success" do
+      do_put
+      response.should be_redirect
+    end
+    
+    it "assigns the flash notice on success" do
+      do_put
+      flash[:notice].should == "Account edited."
+    end
+    
+    it "renders the edit template on failure" do
+      @member.should_receive(:update_attributes).and_return(false)
+      do_put
+      response.should render_template(:edit)
+    end
+    
+    it "assigns flash error on failure" do
+      @member.should_receive(:update_attributes).and_return(false)
+      do_put
+      flash[:error].should == "Account not edited."
+    end
+  end
+    
+  describe "handling DELETE destroy" do
+    
+    before do
+      @member = mock_model(Member)
+      Member.stub!(:find).and_return(@member)
+      @member.stub!(:destroy)
+    end
+    
+    def do_delete
+      delete :destroy, :id => @member.id
+    end
+    
+    it "redirects on success" do
+      do_delete
+      response.should be_redirect
+    end
+    
+    it "find the coresponding member" do
+      Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+      do_delete
+    end
+    
+    it "destroys the member" do
+      @member.should_receive(:destroy)
+      do_delete
+    end
+    
+    it "assigns the flash notice" do
+      do_delete
+      flash[:notice].should == "Member deleted!"
     end
   end
   
   describe "handling GET reset_password" do
     before do
-      @member = mock_model(Member, :id => 1)
+      @member = mock_model(Member)
       Member.stub!(:find).and_return(@member)
     end
     
@@ -192,9 +228,14 @@ describe Admin::MembersController do
       get :reset_password, :id => @member.id
     end
     
-    it "should be succesful" do
+    it "is succesful" do
       do_get
       response.should be_success
+    end
+    
+    it "finds the coresponding member" do
+      Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+      do_get
     end
     
     it "renders reset_password template" do
@@ -205,26 +246,42 @@ describe Admin::MembersController do
   
   describe "handling POST send_email" do
     before do
-      @member = mock_model(Member, :id => 1)
+      @member = mock_model(Member, :name => "test_name")
       Member.stub!(:find).and_return(@member)
       @member.stub!(:email_new_password)
-      @member.stub!(:name)
     end
     
     def do_post
       post :send_email, :id => @member.id
     end
     
-    it "is redirect" do
+    it "redirects on success" do
       do_post
       response.should redirect_to('admin/members')
+    end
+    
+    it "finds the coresponding member" do
+      Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+      do_post
+    end
+    
+    it "emails new password" do
+      @member.should_receive(:email_new_password)
+      do_post
+    end
+    
+    it "assigns flash notice" do
+      do_post
+      flash[:notice].should == "The password for #{@member.name} was reset and sent via email."
     end
   end
   
   describe "handling POST import_from_csv" do
     
     before do
-      Member.stub!(:import_members).and_return([1,1,[]])
+      @imported = 1
+      @duplicate = 1
+      Member.stub!(:import_members).and_return([@imported,@duplicate,[]])
     end
     
     def do_post
@@ -242,16 +299,22 @@ describe Admin::MembersController do
     end
     
     it "renders the edit invalid members template if there are invalid rows in the CSV" do
-      Member.stub!(:import_members).and_return([1, 1, ['something']])
+      Member.stub!(:import_members).and_return([@imported, @duplicate, ['something']])
       do_post
       response.should render_template("edit_invalid_members")
+    end
+    
+    it "assigns flash notice" do
+      do_post
+      flash[:notice].should == "Imported #{@imported} members. " + "#{@duplicate} members were duplicate."
     end
   end
   
   describe "handling POST update_invalid_members" do
     
     before do
-      Member.stub!(:update_invalid_members).and_return([1, []])
+      @imported = 1
+      Member.stub!(:update_invalid_members).and_return([@imported, []])
     end
     
     def do_post
@@ -269,11 +332,81 @@ describe Admin::MembersController do
     end
     
     it "renders the edit invalid members template if there are invalid rows in the CSV" do
-      Member.stub!(:update_invalid_members).and_return([1, ['something']])
+      Member.stub!(:update_invalid_members).and_return([@imported, ['something']])
       do_post
       response.should render_template("edit_invalid_members")
     end
     
+    it "assigns flash notice" do
+      do_post
+      flash[:notice].should == "Imported #{@imported} members."
+    end
+  end
+  
+  describe "handling GET activate" do
+    
+    before do
+      @member = mock_model(Member, :name => 'test_name', :active => false)
+      Member.stub!(:find).and_return(@member)
+      @member.stub!(:activate!)
+    end
+    
+    def do_get
+      get :activate, :id => @member.id
+    end
+    
+    it "redirects on success" do
+      do_get
+      response.should be_redirect
+    end
+    
+    it "finds the coresponding member" do
+      Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+      do_get
+    end
+    
+    it "activates the member" do
+      @member.should_receive(:activate!)
+      do_get
+    end
+    
+    it "assigns flash notice" do
+      do_get
+      flash[:notice].should == "Member #{@member.name} has been activated!"
+    end
+  end
+  
+  describe "handling GET deactivate" do
+    
+    before do
+      @member = mock_model(Member, :name => 'test_name', :active => true)
+      Member.stub!(:find).and_return(@member)
+      @member.stub!(:deactivate!)
+    end
+    
+    def do_get
+      get :deactivate, :id => @member.id
+    end
+    
+    it "redirects on success" do
+      do_get
+      response.should be_redirect
+    end
+    
+    it "finds the coresponding" do
+      Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
+      do_get
+    end
+    
+    it "deactivates the member" do
+      @member.should_receive(:deactivate!)
+      do_get
+    end
+    
+    it "assigns flash notice" do
+      do_get
+      flash[:notice].should == "Member #{@member.name} has been deactivated!"
+    end
   end
   
   describe "parsing list_params" do

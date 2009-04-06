@@ -9,6 +9,7 @@ class CreateMembers < ActiveRecord::Migration
       t.column :remember_token,             :string, :limit => 40
       t.column :remember_token_expires_at,  :datetime
       t.column :emailed_at,                 :datetime
+      t.column :disabled_password,          :string
       t.timestamps
     end
   end

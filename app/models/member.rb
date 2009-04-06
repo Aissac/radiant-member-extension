@@ -85,10 +85,22 @@ class Member < ActiveRecord::Base
     end
     [imported, @not_valid]
   end
+  
+  def activate!
+    self.crypted_password = disabled_password
+    self.disabled_password = nil
+    self.save
+  end
+  
+  def deactivate!
+    self.disabled_password = crypted_password
+    self.crypted_password = nil
+    self.save
+  end
 
   def self.authenticate(email, password)
     return nil if email.blank? || password.blank?
-    m = find :first, :conditions => ['email = ?', email] # need to get the salt
+    m = find(:first, :conditions => ['email = ?', email] ) # need to get the salt
     m && m.authenticated?(password) ? m : nil
   end
 

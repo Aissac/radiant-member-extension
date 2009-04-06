@@ -23,9 +23,9 @@ class Admin::MembersController < ApplicationController
     @member = Member.new(params[:member])
     if @member.save
       redirect_to members_path
-      flash[:notice] = "Account created"
+      flash[:notice] = "Account created."
     else
-      flash.now[:error]  = "Account not created"
+      flash.now[:error]  = "Account not created."
       render :action => 'new'
     end
   end
@@ -36,12 +36,11 @@ class Admin::MembersController < ApplicationController
   
   def update
     @member = Member.find(params[:id])
-    
     if @member.update_attributes(params[:member]) 
       redirect_to members_path
-      flash[:notice] = "Account edited"
+      flash[:notice] = "Account edited."
     else
-      flash.now[:error]  = "Account not edited"
+      flash.now[:error]  = "Account not edited."
       render :action => 'edit'
     end
   end
@@ -49,7 +48,21 @@ class Admin::MembersController < ApplicationController
   def destroy
     @member = Member.find(params[:id])
     @member.destroy
-    flash[:notice] = "Member deleted."
+    flash[:notice] = "Member deleted!"
+    redirect_to members_path
+  end
+  
+  def activate
+    @member = Member.find(params[:id])
+    @member.activate!
+    flash[:notice] = "Member #{@member.name} has been activated!"
+    redirect_to members_path
+  end
+  
+  def deactivate
+    @member = Member.find(params[:id])
+    @member.deactivate!
+    flash[:notice] = "Member #{@member.name} has been deactivated!"
     redirect_to members_path
   end
   

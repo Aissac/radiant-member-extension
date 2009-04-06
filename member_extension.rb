@@ -16,10 +16,11 @@ class MemberExtension < Radiant::Extension
     map.import_from_csv   '/import_from_csv',                 :controller => 'admin/members',   :action => 'import_from_csv'
     map.edit_members      '/edit_invalid_members',            :controller => 'admin/members',   :action => 'edit_invalid_members'
     map.update_members    '/update_invalid_members',          :controller => 'admin/members',   :action => 'update_invalid_members'
+    map.activate          '/admin/members/:id/activate',      :controller => 'admin/members',   :action => 'activate'
+    map.deactivate        '/admin/members/:id/deactivate',    :controller => 'admin/members',   :action => 'deactivate'
   end
   
   def activate
-    WillPaginate.enable_named_scope
     admin.tabs.add "Members", "/admin/members", :after => "Layouts", :visibility => [:all]
     ApplicationController.send(:include, ApplicationControllerMemberExtensions)
     SiteController.class_eval do
