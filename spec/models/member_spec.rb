@@ -221,21 +221,30 @@ describe Member do
   describe Member, "activate and deactivate" do
     
     before do
-      @member = create_member
+      create_member
+      @m = Member.find(@member.id)
     end
     
-    it "activates member" do
-      @member.crypted_password = nil
-      @member.save
-      @member.activate!
-      @member.crypted_password.should_not be_nil
+    it "activates member by creating a new crypted password" do
+      @m.crypted_password = nil
+      @m.save
+      @m.activate!
+      @m.crypted_password.should_not be_nil
     end
     
-    it "deactivates member" do
-      disabled_password = @member.crypted_password
-      @member.deactivate!
-      @member.disabled_password.should == disabled_password
-      @member.crypted_password.should == nil
+    it "activates member by copying the disabled password to crypted password field" do
+      @m.crypted_password = nil
+      @m.disabled_password = 'abcdef'
+      @m.save
+      @m.activate!
+      @m.crypted_password.should == 'abcdef'
+    end
+    
+    it "deactivates member by copying the crypted password into disabled_password field" do
+      disabled_password = @m.crypted_password
+      @m.deactivate!
+      @m.disabled_password.should == disabled_password
+      @m.crypted_password.should == nil
     end
   end
 end
