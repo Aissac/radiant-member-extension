@@ -28,3 +28,4 @@ tr.grey_bg td, tr.grey_bg th    {padding:2px 4px;margin:10px 0 0 0;text-align:le
 .invalid_members_form table     {margin-bottom:20px;}
 .invalid_members_form th        {text-align:left;padding:5px;}
 .invalid_members_form td        {padding:5px;border-top:1px solid #ccc;}
+p.note                          {font-size:12px;font-style:italic;}

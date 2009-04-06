@@ -20,7 +20,7 @@
       %th{:colspan => sort_columns.size + 1}
         %div
           = page_entries_info @members, :entry_name => "result"
-        = will_paginate @members
+        = will_paginate @members, :inner_window => 1, :outer_window => 0
     %tr
       %th= sortable_column_head("Name", :name)
       %th= sortable_column_head("Email", :email)

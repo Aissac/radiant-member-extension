@@ -1,19 +1,20 @@
 %tr
-  %th= label_tag 'name'
+  %th
+    %label{:for => "member_name"} Name:
   %td= f.text_field :name
 %tr
   %th
-    %label{:for => :email} Email:
+    %label{:for => "member_email"} Email:
   %td= f.text_field :email
 %tr
   %th
-    %label{:for => :password} Password:
+    %label{:for => "member_password"} Password:
   %td= f.password_field :password
 %tr
   %th
-    %label{:for => :password_confirmation} Password again:
+    %label{:for => "member_password_confirmation"} Password again:
   %td= f.password_field :password_confirmation
 %tr
   %th
-    %label{:for => :company} Company:
+    %label{:for => "member_company"} Company:
   %td= text_field_with_auto_complete :member, :company
