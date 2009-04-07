@@ -35,13 +35,11 @@
           %td= m.company
           %td
             = m.emailed_at ? date_format(m.emailed_at) : "Email not sent"
-            (
-            =link_to 'reset password', reset_password_path(:id => m.id)
-            )
+            =m.crypted_password.blank? ? "" : '(' + (link_to 'reset password', reset_password_path(:id => m.id)) + ')'
           %td
             = link_to 'Edit', edit_member_path(m.id)
             = link_to 'Delete', member_path(m.id), :method => :delete, :confirm => "Really delete #{m.name}?"
-            = m.crypted_password.blank? ? (link_to 'Activate', activate_path(m), :style => "color:red;") : (link_to 'Deactivate', deactivate_path(m), :confirm => "Really deactivate #{m.name}?")
+            = m.crypted_password.blank? ? (link_to 'Activate', activate_path(m), :style => "color:red;", :confirm => "Really activate #{m.name}?") : (link_to 'Deactivate', deactivate_path(m), :confirm => "Really deactivate #{m.name}?")
       -if @members.empty?
         %tr
           %td{:colspan => sort_columns.size + 1} No results!

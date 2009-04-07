@@ -19,7 +19,7 @@ module SiteControllerMemberExtensions
       if MemberSystem.allow_url?(current_member, url)
         show_page_without_member_validation
       else
-        flash[:error] = "Member must be logged in."
+      Radiant::Config["Member.need_login"].blank? ? flash[:notice] = "You must be logged in to access this page." : flash[:notice] = Radiant::Config["Member.need_login"]
         redirect_to MEMBER_LOGIN_PATH
       end
     end

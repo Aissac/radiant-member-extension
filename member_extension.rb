@@ -9,9 +9,9 @@ class MemberExtension < Radiant::Extension
   define_routes do |map|
     map.resources :members, :path_prefix => '/admin', :controller  => 'admin/members', :collection => {:auto_complete_for_member_company => :any}
     map.resources :member_sessions
+    map.member_logout     '/logout',                          :controller => 'member_sessions', :action => 'destroy'
     map.reset_password    '/admin/members/:id/reset_password',:controller => 'admin/members',   :action => 'reset_password'
     map.send_email        '/admin/members/:id/send_email',    :controller => 'admin/members',   :action => 'send_email'
-    map.member_logout     '/logout',                          :controller => 'member_sessions', :action => 'destroy'
     map.import_members    '/import_members',                  :controller => 'admin/members',   :action => 'import_members'
     map.import_from_csv   '/import_from_csv',                 :controller => 'admin/members',   :action => 'import_from_csv'
     map.edit_members      '/edit_invalid_members',            :controller => 'admin/members',   :action => 'edit_invalid_members'

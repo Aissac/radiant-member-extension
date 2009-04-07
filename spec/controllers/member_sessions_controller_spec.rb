@@ -80,6 +80,7 @@ describe MemberSessionsController do
         do_create
       end
     end #i have no cookie token and I don't want to be remembered
+    
     describe "i have a valid cookie token and I don't want to be remembered" do
       before do
         @member.stub!(:remember_token).and_return('valid_token') 
@@ -136,6 +137,7 @@ describe MemberSessionsController do
         do_create
       end
     end #i have a valid cookie token and I don't want to be remembered
+    
     describe "the cookie token doesn't matter, I want to be remembered" do
       before do
         @member.stub!(:remember_token).and_return('nil') 

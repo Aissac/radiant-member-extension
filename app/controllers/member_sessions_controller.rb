@@ -17,10 +17,10 @@ class MemberSessionsController < ApplicationController
       self.current_member = member
       new_cookie_flag = (params[:remember_me] == "1")
       handle_remember_member_cookie! new_cookie_flag
-      flash[:notice] = "Logged in successfully"
+      note_succesful_login
       redirect_back_or_default(MEMBER_HOME_PATH)
     else
-      note_failed_signin
+      note_failed_login
       @email       = params[:email]
       @remember_me = params[:remember_me]
       redirect_to MEMBER_LOGIN_PATH
@@ -29,16 +29,22 @@ class MemberSessionsController < ApplicationController
 
   def destroy
     logout_keeping_member_session!
-    flash[:notice] = "You have been logged out."
+    note_succesful_logout
     redirect_back_or_default(MEMBER_LOGIN_PATH)
   end
-
+  
   protected
   
-    # Track failed login attempts
-    def note_failed_signin
-      flash[:error] = "Couldn't log you in as '#{params[:email]}'"
+    def note_failed_login(config = Radiant::Config)
+      config["Member.failed_login"].blank? ? flash[:error] = "Couldn't log you in as '#{params[:email]}'." : flash[:error] = config["Member.failed_login"]
       logger.warn "Failed login for '#{params[:email]}' from #{request.remote_ip} at #{Time.now.utc}"
     end
-  
+
+    def note_succesful_login(config = Radiant::Config)
+      config["Member.succesful_login"].blank? ? flash[:notice] = "Logged in successfully." : flash[:notice] = config["Member.succesful_login"]
+    end
+
+    def note_succesful_logout(config = Radiant::Config)
+      config["Member.succesful_logout"].blank? ? flash[:notice] = "You have been logged out." : flash[:notice] = config["Member.succesful_logout"]
+    end
 end
