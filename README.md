@@ -74,9 +74,15 @@ If you are using Radiant 0.7 or newer, you can place this configuration in `conf
 
     MemberExtensionSettings.defaults[:rest_auth_site_key] = '<some big secret key here>'
 
-For installations of Radiant 0.6.9 or older this configuration goes into `environment.rb`.
+The `config/initializers/member.rb` file can be used for member settings, taking into account that the Radiant::Config member settings take precedence.
 
-??? Should I say something about the fact that you can use the initializers/member.rb for settings?
+The settings are created as follows:
+
+    MemberExtensionSettings.defaults[:login_path] = '/login'
+    MemberExtensionSettings.defaults[:home_path] = '/home'
+    MemberExtensionSettings.defaults[:root_path] = '/root'
+
+> Note: For installations of Radiant 0.6.9 or older, the configuration in `config/initializers/member.rb` goes into `environment.rb`.
 
 ### Email
 
