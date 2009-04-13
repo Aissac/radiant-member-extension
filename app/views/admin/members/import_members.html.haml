@@ -1,5 +1,5 @@
 %h1 Import members from CSV
-%p.note The imported users will not be active. You will have to manually activate them by using the 'reset password' action.
+%p.note The imported users will not be active. You will have to manually activate them by using the 'activate' action.
 .form
   - form_for :member, :url => import_from_csv_path, :html => {:multipart => true} do
     %table

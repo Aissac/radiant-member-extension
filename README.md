@@ -6,7 +6,7 @@ About
 
 An extension by [Aissac][aissac] that adds members support to [Radiant CMS][radiant]. Using this extension you can restrict access to pages on your public site to be accessible only to members that have an account. It is based on Restful Authentication System, so the member model has almost the same attributes. The members can be added or edited only from Radiant Admin.
 
-The Member Extension is Radiant 0.7.1 compatible.
+The [Member Extension][rme] is Radiant 0.7.1 compatible.
 
 Features
 ---
@@ -21,19 +21,27 @@ Features
 Installation
 ---
 
-Member Extension has two dependencies, the auto\_complete plugin:
+[Member Extension][rme] has three dependencies, the auto\_complete plugin:
 
     git submodule add git://github.com/rails/auto_complete.git vendor/plugins/auto_complete
     
-And the will\_paginate gem/plugin:
+The will\_paginate gem/plugin:
 
     git submodule add git://github.com/mislav/will_paginate.git vendor/plugins/will_paginate
     
 or
 
     sudo gem install mislav-will_paginate --source http://gems.github.com
+    
+And the fastercsv gem:
 
-Install the Member Extension:
+    sudo gem install fastercsv
+
+Because [Member Extension][rme] keeps the settings in the Radiant::Config table it is highly recommended to install the [Settings Extension][se]
+
+    git submodule add git://github.com/Squeegy/radiant-settings.git vendor/extensions/settings
+
+Finally, install the [Member Extension][rme]:
     
     git submodule add git://github.com/Aissac/radiant-member-extension.git vendor/extensions/member
     
@@ -45,26 +53,41 @@ Then run the rake tasks:
 Configuration
 ---
 
+### Settings
+
+The [Member Extension][rme] keeps its settings in Radiant::Config table, so in order to use correctly the extension you need to create some settings:
+
+    Member.login_value = '/members' # The URL for the login form of your website.
+    Member.home_path = '/articles' # Members will be redirected here on successful login.
+    Member.root_path = 'articles' # Everything under this path requires member login.
+    
+> Notice the lack of leading and trailing slashes.
+
+For controlling the displayed text in the cookie flash (explained below) you can create the following settings:
+
+    Member.failed_login = 'Couldn't log you in!' # Will be rendered if the user fails to log in.
+    Member.succesful_login = 'Logged in successfully!' # Will be rendered if the user succesfully logs in.
+    Member.succesful_logout = 'You have been logged out!' # Will be rendered if the user succesfully logs out.
+    Member.need_login = 'Member must be logged in!' # Will be rendered if the page needs member access.
+
 If you are using Radiant 0.7 or newer, you can place this configuration in `config/initializers/member.rb` of your project:
 
-    MEMBER_LOGIN_PATH = '/members' # The URL for the login form of your website.
-    MEMBER_HOME_PATH = '/articles' # Default home for logged in members.
-    MEMBERS_ROOT = 'articles'      # Everything under this path requires member login.
-                                   # Notice the lack of leading and trailing slashes.
-
-    REST_AUTH_SITE_KEY = '<some big secret key here>'
-    REST_AUTH_DIGEST_STRETCHES = 10
+    MemberExtensionSettings.defaults[:rest_auth_site_key] = '<some big secret key here>'
 
 For installations of Radiant 0.6.9 or older this configuration goes into `environment.rb`.
 
-For security purposes you must define `REST_AUTH_SITE_KEY` and `REST_AUTH_DIGEST_STRETCHES`. This is based on the Restful Authentication.
+??? Should I say something about the fact that you can use the initializers/member.rb for settings?
 
-Also, because we use `action_mailer` to send emails to the members you should comment the ` # config.frameworks -= [ :action_mailer ]` in your `environment.rb` file.
+### Email
+
+Because we use `action_mailer` to send emails to the members you should comment the ` # config.frameworks -= [ :action_mailer ]` in your `environment.rb` file.
+
+You will probably need to change the Email template. You can find it in `RADIANT_ROOT/vendor/extensions/member/app/views/member_mailer/password_email.erb`. Modify this template at your will, and keep in mind that you have access to the `@member` variable.
 
 Usage
 ---
 
-#Available Tags
+###Available Tags
 
 * See the "available tags" documentation built into the Radiant page admin for more details.
 * Use the `<r:member:login />` to render the link for the member login page.
@@ -75,7 +98,7 @@ Usage
 
 ### Site integration
 
-You need to create a page in your site where members can log in. The URL for this page must be the one specified by `MEMBER_LOGIN_PATH`.
+You need to create a page in your site where members can log in. The URL for this page must be the one specified by `Member.login_path` setting.
 
 The form field names must match the following:
 
@@ -100,9 +123,9 @@ In order to use the cookie flash you need to add these Javascript files to your 
     <script src="/javascripts/cookiejar.js" type="text/javascript"></script>
     <script src="/javascripts/member.js" type="text/javascript"></script>
     
-`MemberSessionsController` which handles the authentication logic, can assign three flash messages:
+There are four flash messages assigned:
 
-When the member logs in successfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `MEMBER_HOME_PATH` page the following snippet:
+When the member logs in successfully we set the `flash[:notice] = "Logged in successfully"`. To see the flash you need to put in the `Member.home_path` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -111,7 +134,7 @@ When the member logs in successfully we set the `flash[:notice] = "Logged in suc
       })
     </script>
     
-When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `MEMBER_LOGIN_PATH` page the following snippet:
+When there is a failed login we set the `flash[:error] = "Couldn't log you in as Member Email"`. To see the flash you need to put in the `Member.login_path` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -120,7 +143,7 @@ When there is a failed login we set the `flash[:error] = "Couldn't log you in as
       })
     </script>
     
-When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see the flash you need to put in `MEMBER_LOGIN_PATH` page the following snippet:
+When the member logs out we set the `flash[:notice] = "You have been logged out."`. To see the flash you need to put in `Member.login_path` page the following snippet:
 
     <div id="flash" style="display:none"></div>
     <script type="text/javascript">
@@ -128,6 +151,25 @@ When the member logs out we set the `flash[:notice] = "You have been logged out.
         flash.show('flash', 'notice')
       })
     </script>
+
+When some user tries to access a protected page we set the `flash[:notice] = "You must be logged in to access this page."`. To see the flash you need to put in `Member.login_path` page the following snippet:
+
+    <div id="flash" style="display:none"></div>
+    <script type="text/javascript">
+      document.observe("dom:loaded", function () {
+        flash.show('flash', 'error')
+      })
+    </script>
+    
+> Note: the above snippet is the same as the one used for the `logout` action. You only need to have this snippet once.
+
+### Activate / Deactivate Members
+
+When you create a new member you have two possibilities: you can leave the password field empty, so the new member will not be active. You will have to manually activate him. The second possibility is to create a password for the new member, making him active. The password will not be sent to him by default on create.
+
+Using the import facility of the extension will create only inactive members.
+
+When you deactivate a member, his password is being copied in a new field and he won't be able to access his acount. Activating him will copy his old password.
 
 ### Administration
 
@@ -137,8 +179,6 @@ TODO
 ---
 
 * Rake task to send out emails.
-* Delete/Disable members.
-* Use Radiant::Config to store constants (urls, flash messages).
 
 Contributors
 ---
@@ -148,3 +188,5 @@ Contributors
 
 [aissac]: http://aissac.ro
 [radiant]: http://radiantcms.org/
+[rme]:http://blog.aissac.ro/radiant/member-extension/
+[se]: http://github.com/Squeegy/radiant-settings/tree/master
