@@ -8,8 +8,8 @@ class MemberExtension < Radiant::Extension
   
   define_routes do |map|
     map.resources :members, :path_prefix => '/admin', :controller  => 'admin/members', :collection => {:auto_complete_for_member_company => :any}
-    map.resources :member_sessions
-    map.member_logout     '/logout',                          :controller => 'member_sessions', :action => 'destroy'
+    map.resources :member_sessions, :as => MemberExtensionSettings.sessions_path
+    map.member_logout     MemberExtensionSettings.logout_path,                          :controller => 'member_sessions', :action => 'destroy'
     map.reset_password    '/admin/members/:id/reset_password',:controller => 'admin/members',   :action => 'reset_password'
     map.send_email        '/admin/members/:id/send_email',    :controller => 'admin/members',   :action => 'send_email'
     map.import_members    '/import_members',                  :controller => 'admin/members',   :action => 'import_members'
@@ -21,6 +21,11 @@ class MemberExtension < Radiant::Extension
   end
   
   def activate
+    
+    if RAILS_ENV == 'production'
+      MemberExtensionSettings.check!
+    end
+    
     admin.tabs.add "Members", "/admin/members", :after => "Layouts", :visibility => [:all]
     ApplicationController.send(:include, ApplicationControllerMemberExtensions)
     SiteController.class_eval do

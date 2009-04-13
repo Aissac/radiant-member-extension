@@ -18,19 +18,19 @@ class MemberSessionsController < ApplicationController
       new_cookie_flag = (params[:remember_me] == "1")
       handle_remember_member_cookie! new_cookie_flag
       note_succesful_login
-      redirect_back_or_default(MEMBER_HOME_PATH)
+      redirect_back_or_default(MemberExtensionSettings.home_path)
     else
       note_failed_login
       @email       = params[:email]
       @remember_me = params[:remember_me]
-      redirect_to MEMBER_LOGIN_PATH
+      redirect_to MemberExtensionSettings.login_path
     end
   end
 
   def destroy
     logout_keeping_member_session!
     note_succesful_logout
-    redirect_back_or_default(MEMBER_LOGIN_PATH)
+    redirect_back_or_default MemberExtensionSettings.login_path
   end
   
   protected

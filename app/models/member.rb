@@ -147,9 +147,9 @@ protected
   end
   
   def password_digest(password, salt)
-    digest = REST_AUTH_SITE_KEY
-    REST_AUTH_DIGEST_STRETCHES.times do
-      digest = secure_digest(digest, salt, password, REST_AUTH_SITE_KEY)
+    digest = MemberExtensionSettings.rest_auth_site_key
+    MemberExtensionSettings.rest_auth_digest_stretches.times do
+      digest = secure_digest(digest, salt, password, MemberExtensionSettings.rest_auth_site_key)
     end
     digest
   end

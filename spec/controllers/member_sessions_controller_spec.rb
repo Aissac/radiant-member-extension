@@ -2,6 +2,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe MemberSessionsController do
   before do
+    MemberExtensionSettings.defaults[:login_path] = '/login'
+    MemberExtensionSettings.defaults[:home_path] = "/home"
     @member  = mock_model(Member, :id => 1, :email => 'test@test.com', :name => 'Member Name')
     @login_params = { :email => 'test@example.com', :password => 'test' }
     Member.stub!(:authenticate).with(@login_params[:email], @login_params[:password]).and_return(@member)
@@ -58,7 +60,7 @@ describe MemberSessionsController do
       
       it 'redirects to members_home' do 
         do_create
-        response.should redirect_to(MEMBER_HOME_PATH)
+        response.should redirect_to("/home")
       end
       
       it "does not reset my session" do 
@@ -120,7 +122,7 @@ describe MemberSessionsController do
       
       it 'redirects to members_home' do 
         do_create
-        response.should redirect_to(MEMBER_HOME_PATH)
+        response.should redirect_to("/home")
       end
       
       it "does not reset my session" do 
@@ -177,7 +179,7 @@ describe MemberSessionsController do
 
        it 'redirects to members_home' do 
          do_create
-         response.should redirect_to(MEMBER_HOME_PATH)
+         response.should redirect_to("/home")
        end
 
        it "does not reset my session" do 
@@ -217,7 +219,7 @@ describe MemberSessionsController do
     
     it 'redirects on failure' do
       do_create
-      response.should redirect_to(MEMBER_LOGIN_PATH)
+      response.should redirect_to("/login")
     end
     
     it "doesn't log me in" do

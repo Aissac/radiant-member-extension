@@ -65,7 +65,7 @@ module AuthenticatedMembersSystem
       respond_to do |format|
         format.html do
           member_store_location
-          redirect_to MEMBER_LOGIN_PATH
+          redirect_to MemberExtensionSettings.member_defaults[:member_login_path]
         end
         # format.any doesn't work in rails version < http://dev.rubyonrails.org/changeset/8987
         # Add any other API formats here.  (Some browsers, notably IE6, send Accept: */* and trigger 
