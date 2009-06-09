@@ -2,7 +2,6 @@ module SiteControllerMemberExtensions
   def self.included(base)
     base.send(:include, InstanceMethods)
     base.class_eval do
-      session :disabled => false
       alias_method_chain :show_page, :member_validation
       use_cookies_flash
     end
@@ -18,6 +17,9 @@ module SiteControllerMemberExtensions
       end
       if MemberSystem.allow_url?(current_member, url)
         show_page_without_member_validation
+        if url =~ Regexp.new(MemberExtensionSettings.root_path)
+          expires_now
+        end
       else
       Radiant::Config["Member.need_login"].blank? ? flash[:notice] = "You must be logged in to access this page." : flash[:notice] = Radiant::Config["Member.need_login"]
         redirect_to MemberExtensionSettings.login_path

@@ -423,7 +423,8 @@ describe Admin::MembersController do
     end
     
     def set_cookie(key, value)
-      request.cookies[key] = CGI::Cookie.new('name' => key, 'value' => value)
+      # request.cookies[key] = CGI::Cookie.new('name' => key, 'value' => value)
+      request.cookies[key] = value
     end
   
     it "should have default set of params" do
@@ -456,14 +457,14 @@ describe Admin::MembersController do
       set_cookie('page', '98')
       do_get(:page => '99')
       filter_by_params
-      response.cookies['page'].should == ['99']
+      response.cookies['page'].should == '99'
     end
     
     it "should reset list_params when params[:reset] == 1" do
       set_cookie('page', '98')
       do_get(:reset => 1)
       filter_by_params
-      response.cookies['page'].should == ["1"]
+      response.cookies['page'].should == "1"
     end
     it "should set params[:page] if loading from cookies (required for will_paginate to work)" do
       set_cookie('page', '98')

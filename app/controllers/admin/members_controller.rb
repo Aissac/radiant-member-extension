@@ -25,7 +25,7 @@ class Admin::MembersController < ApplicationController
       redirect_to members_path
       flash[:notice] = "Account created."
     else
-      flash.now[:error]  = "Account not created."
+      flash[:error]  = "Account not created."
       render :action => 'new'
     end
   end
@@ -40,7 +40,7 @@ class Admin::MembersController < ApplicationController
       redirect_to members_path
       flash[:notice] = "Account edited."
     else
-      flash.now[:error]  = "Account not edited."
+      flash[:error]  = "Account not edited."
       render :action => 'edit'
     end
   end
