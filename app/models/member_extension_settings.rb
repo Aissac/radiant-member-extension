@@ -11,7 +11,7 @@ class MemberExtensionSettings
   @@defaults = {
     :login_path                 => "/login",   # The URL for the login form of your website.
     :home_path                  => "/members", # Members will be redirected here on successful login.
-    :root_path                  => "/members", # Everything under this path requires member login.
+    :root_path                  => "members",  # Everything under this path requires member login.
     :logout_path                => "/logout",
     :sessions_path              => "member_sessions",
     :rest_auth_digest_stretches => 10

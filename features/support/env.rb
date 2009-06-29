@@ -1,20 +1,28 @@
 # Sets up the Rails environment for Cucumber
-ENV["RAILS_ENV"] ||= "test"
+ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + '/../../../../../config/environment')
+ 
 require 'cucumber/rails/world'
 require 'cucumber/formatter/unicode' # Comment out this line if you don't want Cucumber Unicode support
-Cucumber::Rails.use_transactional_fixtures
-Cucumber::Rails.bypass_rescue # Comment out this line if you want Rails own error handling 
-                              # (e.g. rescue_action_in_public / rescue_responses / rescue_from)
 
 require 'webrat'
-
+ 
 Webrat.configure do |config|
   config.mode = :rails
 end
 
+require 'spec'
+require 'email_spec/cucumber'
+
+# Comment out the next two lines if you're not using RSpec's matchers (should / should_not) in your steps.
 require 'cucumber/rails/rspec'
 require 'webrat/core/matchers'
-
-Factory.definition_file_paths = File.expand_path(File.dirname(__FILE__) + '/../factories')
-Factory.find_definitions
+ 
+Cucumber::Rails::World.class_eval do
+  include Dataset
+  datasets_directory "#{RADIANT_ROOT}/spec/datasets"
+  Dataset::Resolver.default = Dataset::DirectoryResolver.new("#{RADIANT_ROOT}/spec/datasets", File.dirname(__FILE__) + '/../datasets')
+  self.datasets_database_dump_path = "#{Rails.root}/tmp/dataset"
+  
+  dataset :pages, :users, :members, :member_pages
+end

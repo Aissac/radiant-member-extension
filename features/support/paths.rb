@@ -2,12 +2,12 @@ module NavigationHelpers
   def path_to(page_name)
     case page_name
     
-    when /the homepage/
-      root_path
+    when /the welcome page/
+      admin_path
     when /the login page/
-      '/login'
-    when /the member homepage/
-      '/members'
+      root_path + 'login'
+    when /the members homepage/
+      root_path + 'members'
     
     # Add more page name => path mappings here
     
