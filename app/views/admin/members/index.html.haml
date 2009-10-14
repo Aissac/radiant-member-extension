@@ -1,42 +1,40 @@
-- form_tag({}, {:class => 'list', :method => :get}) do
-  = hidden_field :reset, 1
-  %table.search
-    %tr.grey_bg
-      %td Search:
-      %td= link_to 'Import members from CSV file', import_members_path
-      %td= link_to 'Add member', new_member_path
-    %tr
-      %td
-        %label{:for => 'company'} Company:
-        =select_tag("company", '<option value="">- All companies -</option>' + options_from_collection_for_select(@companies, "company", "company", list_params[:company]))
-        - filter_columns.each do |k|
-          %label{:for => k} 
-            = k.to_s.capitalize
-          = text_field_tag k, list_params[k]
-        = filter_actions_tag
+.grey
+.top.clearfix
+  .links
+    = link_to 'Import members from CSV file', import_members_members_path
+    = link_to 'Add member', new_member_path
+  .search_form
+    - form_tag({}, {:class => 'list', :method => :get}) do
+      = hidden_field :reset, 1
+      %table.form
+        %tr
+          %td
+            %label{:for => 'company'} Company:
+            = select_tag("company", '<option value="">- All companies -</option>' + options_from_collection_for_select(@companies, "company", "company", list_params[:company]))
+            - filter_columns.each do |k|
+              %label{:for => k} 
+                = k.to_s.capitalize
+              = text_field_tag k, list_params[k]
+            = filter_actions_tag
+
 %table.results
   %thead
-    %tr.grey_bg
-      %th{:colspan => sort_columns.size + 1}
-        %div
-          = page_entries_info @members, :entry_name => "result"
-        = will_paginate @members, :inner_window => 1, :outer_window => 0
     %tr
       %th= sortable_column_head("Name", :name)
       %th= sortable_column_head("Email", :email)
       %th= sortable_column_head("Company", :company)
-      %th= sortable_column_head("Emailed at", :emailed_at)
-      %th Actions
+      %th.emailed_at= sortable_column_head("Emailed at", :emailed_at)
+      %th.actions Actions
     %tbody
       - @members.each do |m|
         %tr
-          %td= m.name
-          %td= m.email
-          %td= m.company
-          %td
+          %td= h(m.name)
+          %td= h(m.email)
+          %td= h(m.company)
+          %td.emailed_at
             = m.emailed_at ? date_format(m.emailed_at) : "Email not sent"
-            =m.crypted_password.blank? ? "" : '(' + (link_to 'reset password', reset_password_path(:id => m.id)) + ')'
-          %td
+            = m.crypted_password.blank? ? "" : '(' + (link_to 'reset password', reset_password_path(:id => m.id)) + ')'
+          %td.actions
             = link_to 'Edit', edit_member_path(m.id)
             = link_to 'Delete', member_path(m.id), :method => :delete, :confirm => "Really delete #{m.name}?"
             = m.crypted_password.blank? ? (link_to 'Activate', activate_path(m), :style => "color:red;", :confirm => "Really activate #{m.name}?") : (link_to 'Deactivate', deactivate_path(m), :confirm => "Really deactivate #{m.name}?")
@@ -44,6 +42,6 @@
         %tr
           %td{:colspan => sort_columns.size + 1} No results!
     %tfoot
-      %tr.grey_bg
-        %th{:colspan => sort_columns.size + 1}
-          = will_paginate @members
+      %tr
+        %th{:colspan => 3}= page_entries_info @members, :entry_name => "result"
+        %th{:colspan => 2}= will_paginate @members, :inner_window => 1, :outer_window => 1

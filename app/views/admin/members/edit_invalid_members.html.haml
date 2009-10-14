@@ -1,19 +1,24 @@
+- body_classes << "reversed"
+
 %h1 Modify invalid members
+
 %p.note The following members could not be added. Check the errors on each line, fix them, and add the members.
-.invalid_members_form
-  - form_tag update_members_path do
-    %table
+.member_form
+  - form_tag update_invalid_members_members_path do
+    %table.form
       %tr
         %th Name
         %th Email
         %th Company
-        %th Error
+        %th.errors Error
       - @not_valid.each do |m|
         %tr
           %td= text_field_tag "member[][name]", m[0]
           %td= text_field_tag "member[][email]", m[1]
           %td= text_field_tag "member[][company]", m[2]
-          %td= m[3]
-    = submit_tag 'Add members'
-    or
-    = link_to 'Done', members_path
+          %td.errors= m[3]
+      %tr
+        %td
+          = submit_tag 'Add members'
+          or
+          = link_to 'Done', members_path

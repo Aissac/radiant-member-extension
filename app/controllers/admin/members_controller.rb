@@ -122,6 +122,6 @@ class Admin::MembersController < ApplicationController
     
     def add_member_assets
       include_stylesheet 'admin/member'
-      include_javascript 'controls'
+      include_javascript 'admin/controls'
     end
 end

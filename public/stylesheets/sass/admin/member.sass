@@ -1,0 +1,167 @@
+.clearfix:after
+  :content "."
+  :display block
+  :height 0
+  :clear both
+  :visibility hidden
+.clearfix
+  :display inline-block
+.clearfix
+  :display block
+
+.grey
+  :background-color #9E9E9E
+  :height 21px
+  :margin -20px -20px 0 -20px
+  
+table.results
+  :width 100%
+  a
+    &.sort_asc
+      background: transparent url(/images/admin/metadata_toggle.png) no-repeat scroll 95% 5px
+      padding-right: 15px
+
+    &.sort_desc
+      background: transparent url(/images/admin/metadata_toggle.png) no-repeat scroll 95% -23px
+      padding-right: 15px
+  thead
+    th
+      :background-color #7E7E7E
+      :font-weight normal
+      :padding 2px 4px
+      :text-shadow 1px 1px 0 #666666
+      :color white
+      :font-size 90%
+      &.actions
+        :width 180px
+      &.emailed_at
+        :width 270px
+      a
+        :text-shadow 1px 1px 0 #666666
+        :color white
+        :font-size 90%
+  tbody
+    tr:hover
+      :background-color #ecf4ff
+    td
+      :border-bottom 1px solid #F0F0F0
+      :padding 8px 4px
+      :text-align left
+      :vertical-align top
+      &.actions a, &.emailed_at a
+        :color black
+        :text-decoration none
+        &:hover
+          :text-decoration underline
+  tfoot
+    th
+      :background-color #7E7E7E
+      :font-weight normal
+      :padding 2px 4px
+      :text-shadow 1px 1px 0 #666666
+      :color white
+      :font-size 90%
+      :vertical-align middle
+      a
+        :text-shadow 1px 1px 0 #666666
+        :color white
+        :font-size 90%
+
+.pagination
+  :text-align center
+  :float right
+  :margin-right 20px
+  a
+    :text-shadow 1px 1px 0 #666666
+    :color white
+    :font-size 90%
+    :padding .2em .3em
+    :text-decoration none
+    &:hover, &:focus
+      :text-decoration underline
+  span
+    :padding .2em .3em
+    &.disabled
+      :color #CCC
+    &.current
+      :font-weight bold
+      :background-color #cac8c0
+      :display inline-block
+      :padding 3px 8px
+      :-webkit-border-radius 12px
+      :-moz-border-radius 12px
+
+table.form
+  tr
+    :border-top 1px solid #999999
+    &:first-child
+      :border none
+  th, td
+    :padding 5px
+    :vertical-align middle
+  th
+    :width 100px
+    &.errors
+      :width 200px
+    label
+      :color white
+      :font-size 80%
+  td
+    &.errors, .error
+      :color red
+    
+  input[type="text"], select
+    :width 150px
+    
+  a
+    :-moz-border-radius 4px
+    :-webkit-border-radius 4px
+    :background-color #555
+    :font-size 80%
+    :padding 3px 8px
+    :text-decoration none
+    :text-shadow 0 0 20px rgba(255, 255, 255, 0.1)
+    :margin-right 10px
+    :color white
+    &:hover
+      :text-decoration underline
+
+.top
+  background-color: #7E7E7E
+  :-moz-border-radius 6px
+  :-webkit-border-radius 6px
+  :color white
+  :margin 5px 0 10px 0
+  :padding 0 10px
+  a
+    :color white
+  .search_form
+    :padding-top 1px
+    :float left
+  .links
+    :float right
+    :padding 8px 0
+    a
+      :-moz-border-radius 4px
+      :-webkit-border-radius 4px
+      :background-color #555
+      :font-size 80%
+      :padding 3px 8px
+      :text-decoration none
+      :text-shadow 0 0 20px rgba(255, 255, 255, 0.1)
+      :margin-left 10px
+      &:hover
+        :text-decoration underline
+
+.member_form
+  background-color: #7E7E7E
+  :-moz-border-radius 6px
+  :-webkit-border-radius 6px
+  :border 1px solid #999999
+  border-top-left-radius: 6px
+  border-top-right-radius: 6px
+  :color white
+  table.form
+    :margin-left 20px
+    input[type="text"], input[type="password"]
+      :width 300px

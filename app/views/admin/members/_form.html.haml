@@ -1,7 +1,8 @@
 %tr
   %th
     %label{:for => "member_name"} Name:
-  %td= f.text_field :name
+  %td
+    = f.text_field :name
 %tr
   %th
     %label{:for => "member_email"} Email:
@@ -18,3 +19,9 @@
   %th
     %label{:for => "member_company"} Company:
   %td= text_field_with_auto_complete :member, :company
+%tr
+  %th &nbsp;
+  %td
+    = f.submit submit_label
+    or
+    = link_to 'Cancel', members_path
