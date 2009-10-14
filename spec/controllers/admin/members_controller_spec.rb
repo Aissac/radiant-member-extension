@@ -4,7 +4,7 @@ describe Admin::MembersController do
   dataset :users
   
   before :each do
-    login_as :developer
+    login_as :designer
   end
   
   describe "handling GET index" do
@@ -55,7 +55,7 @@ describe Admin::MembersController do
     
     describe "including member assets" do
       it "includes javascripts" do
-        controller.should_receive(:include_javascript).with("controls")
+        controller.should_receive(:include_javascript).with("admin/controls")
         do_get
       end
 
@@ -301,7 +301,7 @@ describe Admin::MembersController do
     it "renders the edit invalid members template if there are invalid rows in the CSV" do
       Member.stub!(:import_members).and_return([@imported, @duplicate, ['something']])
       do_post
-      response.should render_template("edit_invalid_members")
+      response.should render_template("edit_invalid")
     end
     
     it "assigns flash notice" do
@@ -310,7 +310,7 @@ describe Admin::MembersController do
     end
   end
   
-  describe "handling POST update_invalid_members" do
+  describe "handling POST update_invalid" do
     
     before do
       @imported = 1
@@ -318,7 +318,7 @@ describe Admin::MembersController do
     end
     
     def do_post
-      post :update_invalid_members
+      post :update_invalid
     end
     
     it "imports members from CSV" do
@@ -334,7 +334,7 @@ describe Admin::MembersController do
     it "renders the edit invalid members template if there are invalid rows in the CSV" do
       Member.stub!(:update_invalid_members).and_return([@imported, ['something']])
       do_post
-      response.should render_template("edit_invalid_members")
+      response.should render_template("edit_invalid")
     end
     
     it "assigns flash notice" do
@@ -343,7 +343,7 @@ describe Admin::MembersController do
     end
   end
   
-  describe "handling GET activate" do
+  describe "handling POST activate" do
     
     before do
       @member = mock_model(Member, :name => 'test_name', :active => false)
@@ -351,32 +351,32 @@ describe Admin::MembersController do
       @member.stub!(:activate!)
     end
     
-    def do_get
-      get :activate, :id => @member.id
+    def do_post
+      post :activate, :id => @member.id
     end
     
     it "redirects on success" do
-      do_get
+      do_post
       response.should be_redirect
     end
     
     it "finds the coresponding member" do
       Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
-      do_get
+      do_post
     end
     
     it "activates the member" do
       @member.should_receive(:activate!)
-      do_get
+      do_post
     end
     
     it "assigns flash notice" do
-      do_get
+      do_post
       flash[:notice].should == "Member #{@member.name} has been activated!"
     end
   end
   
-  describe "handling GET deactivate" do
+  describe "handling POST deactivate" do
     
     before do
       @member = mock_model(Member, :name => 'test_name', :active => true)
@@ -384,27 +384,27 @@ describe Admin::MembersController do
       @member.stub!(:deactivate!)
     end
     
-    def do_get
-      get :deactivate, :id => @member.id
+    def do_post
+      post :deactivate, :id => @member.id
     end
     
     it "redirects on success" do
-      do_get
+      do_post
       response.should be_redirect
     end
     
     it "finds the coresponding" do
       Member.should_receive(:find).with(@member.id.to_s).and_return(@member)
-      do_get
+      do_post
     end
     
     it "deactivates the member" do
       @member.should_receive(:deactivate!)
-      do_get
+      do_post
     end
     
     it "assigns flash notice" do
-      do_get
+      do_post
       flash[:notice].should == "Member #{@member.name} has been deactivated!"
     end
   end

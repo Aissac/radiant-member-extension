@@ -1,7 +1,7 @@
 .grey
 .top.clearfix
   .links
-    = link_to 'Import members from CSV file', import_members_members_path
+    = link_to 'Import members from CSV file', import_members_path
     = link_to 'Add member', new_member_path
   .search_form
     - form_tag({}, {:class => 'list', :method => :get}) do
@@ -33,11 +33,11 @@
           %td= h(m.company)
           %td.emailed_at
             = m.emailed_at ? date_format(m.emailed_at) : "Email not sent"
-            = m.crypted_password.blank? ? "" : '(' + (link_to 'reset password', reset_password_path(:id => m.id)) + ')'
+            = m.crypted_password.blank? ? "" : '(' + (link_to 'reset password', reset_password_member_path(:id => m.id)) + ')'
           %td.actions
             = link_to 'Edit', edit_member_path(m.id)
             = link_to 'Delete', member_path(m.id), :method => :delete, :confirm => "Really delete #{m.name}?"
-            = m.crypted_password.blank? ? (link_to 'Activate', activate_path(m), :style => "color:red;", :confirm => "Really activate #{m.name}?") : (link_to 'Deactivate', deactivate_path(m), :confirm => "Really deactivate #{m.name}?")
+            = m.crypted_password.blank? ? (link_to 'Activate', activate_member_path(m), :method => :post, :style => "color:red;", :confirm => "Really activate #{m.name}?") : (link_to 'Deactivate', deactivate_member_path(m), :method => :post, :confirm => "Really deactivate #{m.name}?")
       -if @members.empty?
         %tr
           %td{:colspan => sort_columns.size + 1} No results!

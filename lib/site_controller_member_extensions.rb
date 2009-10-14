@@ -44,22 +44,5 @@ module SiteControllerMemberExtensions
       
       url
     end
-    # def show_page_with_member_validation
-    #   url = params[:url]
-    #   if Array === url
-    #     url = url.join('/')
-    #   else
-    #     url = url.to_s
-    #   end
-    #   if MemberSystem.allow_url?(current_member, url)
-    #     show_page_without_member_validation
-    #     if url =~ Regexp.new(MemberExtensionSettings.root_path)
-    #       expires_now
-    #     end
-    #   else
-    #   Radiant::Config["Member.need_login"].blank? ? flash[:notice] = "You must be logged in to access this page." : flash[:notice] = Radiant::Config["Member.need_login"]
-    #     redirect_to MemberExtensionSettings.login_path
-    #   end
-    # end
   end
 end

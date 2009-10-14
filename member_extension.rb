@@ -11,26 +11,22 @@ class MemberExtension < Radiant::Extension
       :path_prefix => '/admin', 
       :controller  => 'admin/members', 
       :collection => { 
-          :auto_complete_for_member_company => :any,
-          :import_members => :get,
-          :import_from_csv => :post,
-          :edit_invalid_members => :get,
-          :update_invalid_members => :post }
-
+        :auto_complete_for_member_company => :any,
+        :import => :get,
+        :import_from_csv => :post,
+        :edit_invalid => :get,
+        :update_invalid => :post },
+      :member => {
+        :reset_password => :get,
+        :send_email => :post,
+        :activate => :post,
+        :deactivate => :post
+      }
     map.resources :member_sessions, :as => MemberExtensionSettings.sessions_path
-    map.member_logout     MemberExtensionSettings.logout_path,                          :controller => 'member_sessions', :action => 'destroy'
-    map.reset_password    '/admin/members/:id/reset_password',:controller => 'admin/members',   :action => 'reset_password'
-    map.send_email        '/admin/members/:id/send_email',    :controller => 'admin/members',   :action => 'send_email'
-    # map.import_members    '/import_members',                  :controller => 'admin/members',   :action => 'import_members'
-    # map.import_from_csv   '/admin/members/import_from_csv',                 :controller => 'admin/members',   :action => 'import_from_csv'
-    # map.edit_invalid_members      '/edit_invalid_members',            :controller => 'admin/members',   :action => 'edit_invalid_members'
-    # map.update_members    '/update_invalid_members',          :controller => 'admin/members',   :action => 'update_invalid_members'
-    map.activate          '/admin/members/:id/activate',      :controller => 'admin/members',   :action => 'activate'
-    map.deactivate        '/admin/members/:id/deactivate',    :controller => 'admin/members',   :action => 'deactivate'
+    map.member_logout MemberExtensionSettings.logout_path, :controller => 'member_sessions', :action => 'destroy'
   end
   
   def activate
-    
     if RAILS_ENV == 'production'
       MemberExtensionSettings.check!
     end
@@ -47,5 +43,4 @@ class MemberExtension < Radiant::Extension
   
   def deactivate
   end
-  
 end
