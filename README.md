@@ -23,11 +23,11 @@ Installation
 
 [Member Extension][rme] has three dependencies, the auto\_complete plugin:
 
-    git submodule add git://github.com/rails/auto_complete.git vendor/plugins/auto_complete
+    git clone git://github.com/rails/auto_complete.git vendor/plugins/auto_complete
     
 The will\_paginate gem/plugin:
 
-    git submodule add git://github.com/mislav/will_paginate.git vendor/plugins/will_paginate
+    git clone git://github.com/mislav/will_paginate.git vendor/plugins/will_paginate
     
 or
 
@@ -39,16 +39,24 @@ And the fastercsv gem:
 
 Because [Member Extension][rme] keeps the settings in the Radiant::Config table it is highly recommended to install the [Settings Extension][se]
 
-    git submodule add git://github.com/Squeegy/radiant-settings.git vendor/extensions/settings
+    git clone git://github.com/Squeegy/radiant-settings.git vendor/extensions/settings
 
 Finally, install the [Member Extension][rme]:
     
-    git submodule add git://github.com/Aissac/radiant-member-extension.git vendor/extensions/member
+    git clone git://github.com/Aissac/radiant-member-extension.git vendor/extensions/member
     
 Then run the rake tasks:
 
     rake radiant:extensions:member:migrate
     rake radiant:extensions:member:update
+
+###Note
+
+The git branches hold stable versions of the extension for older version of Radiant CMS. To checkout one of these branches:
+
+    git clone git://github.com/Aissac/radiant-member-extension.git vendor/extensions/member
+    cd vendor/extensions/member
+    git checkout -b <branch-name> origin/<remote-branch-name>
 
 Configuration
 ---
@@ -57,18 +65,18 @@ Configuration
 
 The [Member Extension][rme] keeps its settings in Radiant::Config table, so in order to use correctly the extension you need to create some settings:
 
-    Member.login_value = '/members' # The URL for the login form of your website.
-    Member.home_path = '/articles' # Members will be redirected here on successful login.
-    Member.root_path = 'articles' # Everything under this path requires member login.
+    Radiant::Config['Member.login_value'] = '/members' # The URL for the login form of your website.
+    Radiant::Config['Member.home_path'] = '/articles' # Members will be redirected here on successful login.
+    Radiant::Config['Member.root_path'] = 'articles' # Everything under this path requires member login.
     
 > Notice the lack of leading and trailing slashes.
 
 For controlling the displayed text in the cookie flash (explained below) you can create the following settings:
 
-    Member.failed_login = 'Couldn't log you in!' # Will be rendered if the user fails to log in.
-    Member.succesful_login = 'Logged in successfully!' # Will be rendered if the user succesfully logs in.
-    Member.succesful_logout = 'You have been logged out!' # Will be rendered if the user succesfully logs out.
-    Member.need_login = 'Member must be logged in!' # Will be rendered if the page needs member access.
+    Radiant::Config['Member.failed_login'] = 'Couldn't log you in!' # Will be rendered if the user fails to log in.
+    Radiant::Config['Member.succesful_login'] = 'Logged in successfully!' # Will be rendered if the user succesfully logs in.
+    Radiant::Config['Member.succesful_logout'] = 'You have been logged out!' # Will be rendered if the user succesfully logs out.
+    Radiant::Config['Member.need_login'] = 'Member must be logged in!' # Will be rendered if the page needs member access.
 
 If you are using Radiant 0.7 or newer, you can place this configuration in `config/initializers/member.rb` of your project:
 
